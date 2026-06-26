@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="api-base-url" content="http://localhost:4000" />
+    <title>Trainee Enrollment | INSEED Admin</title>
+    <meta
+      name="description"
+      content="Manage trainee enrollment, student profiles, and enrollment records from the INSEED Admin operations dashboard."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    
+        <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/png" href="assets/images/favicon.png" />
+  </head>
+  <body>
+    <div class="admin-shell" data-admin-page="trainee-enrollment" data-trainee-enrollment data-students-api="/api/admin/students">
+      <header class="admin-header">
+        <div class="container admin-header-row">
+                    <a class="admin-brand" href="admin-dashboard.html" aria-label="Admin dashboard home">
+            <span class="brand-mark brand-mark-logo">
+              <img class="brand-logo" src="assets/branding/inseed-logo-wide.png" alt="INSEED Solutions logo" loading="eager" decoding="async" />
+            </span>
+            <span class="brand-copy">
+              <strong>INSEED Admin</strong>
+              <small>Operations & Placement Console</small>
+            </span>
+          </a>
+
+          <nav class="admin-nav" aria-label="Admin">
+            <a href="admin-trainee-enrollment.html" data-nav-item="trainee-enrollment" aria-current="page">Trainee Enrollment</a>
+            <a href="admin-placement-details.html" data-nav-item="placement-details">Placement Details</a>
+            <a href="admin-partnerships.html" data-nav-item="partnerships">Partnerships</a>
+            <a href="admin-gallery-management.html" data-nav-item="gallery">Gallery</a>
+            <a href="admin-reports.html" data-nav-item="reports">Reports</a>
+            <a href="admin-users.html" data-nav-item="users">Users</a>
+          </nav>
+
+          <div class="admin-actions">
+            <button class="button button-secondary button-sm" type="button" id="adminTraineeLogoutButton">Logout</button>
+          </div>
+        </div>
+      </header>
+
+      <main>
+        <section class="admin-hero admin-module-hero">
+          <div class="container admin-hero-grid reveal">
+            <div>
+              <p class="eyebrow">Trainee Enrollment</p>
+              <h1>Enroll, review, and manage trainee profiles from one clean workspace.</h1>
+              <p>
+                Capture new student records quickly, keep enrollment data organized, and manage the trainee pipeline with a card-based form and a professional searchable table.
+              </p>
+            </div>
+
+            <aside class="admin-hero-card">
+              <span>Module status</span>
+              <strong>Trainee Management</strong>
+              <small id="traineeModuleMeta">Loading protected admin data...</small>
+            </aside>
+          </div>
+        </section>
+
+        <section class="section admin-dashboard-section trainee-management-section">
+          <div class="container">
+            <div class="admin-stats-grid reveal">
+              <article class="admin-metric-card">
+                <span>Total Trainees</span>
+                <strong id="traineeMetricTotal">0</strong>
+                <small>Student records currently enrolled</small>
+              </article>
+              <article class="admin-metric-card">
+                <span>Active Courses</span>
+                <strong id="traineeMetricCourses">0</strong>
+                <small>Distinct course tracks represented</small>
+              </article>
+              <article class="admin-metric-card">
+                <span>Reachable Records</span>
+                <strong id="traineeMetricReachable">0</strong>
+                <small>Trainees with phone and email available</small>
+              </article>
+              <article class="admin-metric-card">
+                <span>Placement Ready</span>
+                <strong id="traineeMetricPlacementReady">0</strong>
+                <small>Trainees already linked to placement records</small>
+              </article>
+            </div>
+
+            <div class="trainee-admin-grid reveal">
+              <section class="admin-panel trainee-form-panel">
+                <div class="panel-heading">
+                  <div>
+                    <p class="eyebrow">Enrollment Form</p>
+                    <h2 id="traineeFormHeading">Add a new trainee</h2>
+                  </div>
+                </div>
+
+                <form id="traineeEnrollmentForm" class="trainee-admin-form" autocomplete="off">
+                  <input type="hidden" name="studentId" id="traineeEditId" />
+
+                  <div class="admin-form-accordion">
+                    <article class="accordion-item is-open">
+                      <button class="accordion-trigger" type="button" aria-expanded="true">
+                        <span><span class="accordion-icon-badge">1</span>Basic Candidate Information</span>
+                        <span class="accordion-icon"></span>
+                      </button>
+                      <div class="accordion-content">
+                        <div class="trainee-form-grid">
+                          <label>
+                            <span>Candidate ID</span>
+                            <input type="text" name="candidateId" id="candidateIdField" maxlength="24" required />
+                          </label>
+                          <label>
+                            <span>Full Name</span>
+                            <input type="text" name="fullName" required />
+                          </label>
+                          <label>
+                            <span>Father Name</span>
+                            <input type="text" name="fatherName" required />
+                          </label>
+                          <label>
+                            <span>Mother Name</span>
+                            <input type="text" name="motherName" required />
+                          </label>
+                          <label>
+                            <span>Mobile Number</span>
+                            <input type="tel" name="phone" inputmode="tel" maxlength="16" required />
+                          </label>
+                          <label>
+                            <span>Email Address</span>
+                            <input type="email" name="email" autocomplete="off" required />
+                          </label>
+                          <label>
+                            <span>Date of Birth</span>
+                            <input type="date" name="dateOfBirth" required />
+                          </label>
+                          <label class="trainee-password-field" id="traineePasswordField">
+                            <span>Temporary Password</span>
+                            <input type="password" name="password" id="traineePasswordInput" autocomplete="new-password" required />
+                          </label>
+                        </div>
+                      </div>
+                    </article>
+
+                    <article class="accordion-item">
+                      <button class="accordion-trigger" type="button" aria-expanded="false">
+                        <span><span class="accordion-icon-badge">2</span>Educational &amp; Social Details</span>
+                        <span class="accordion-icon"></span>
+                      </button>
+                      <div class="accordion-content">
+                        <div class="trainee-form-grid">
+                          <label>
+                            <span>Course</span>
+                            <input type="text" name="course" required />
+                          </label>
+                          <div class="trainee-upload-field" data-upload-field data-upload-name="qualificationCertificate" data-required="true" data-accept=".pdf,.jpg,.jpeg,.png" data-max-size="5242880">
+                            <span>Qualification Certificate</span>
+                            <input type="file" name="qualificationCertificate" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" required />
+                            <div class="trainee-upload-card" tabindex="0" role="button" aria-label="Upload qualification certificate">
+                              <div class="trainee-upload-preview" data-upload-preview></div>
+                              <div>
+                                <strong data-upload-title>Upload file</strong>
+                                <small data-upload-meta>PDF, JPG, or PNG up to 5 MB</small>
+                              </div>
+                              <div class="trainee-upload-actions">
+                                <button type="button" class="table-action-link" data-upload-replace>Replace</button>
+                                <button type="button" class="table-action-link table-action-danger" data-upload-remove hidden>Remove</button>
+                              </div>
+                            </div>
+                          </div>
+                          <label>
+                            <span>Education</span>
+                            <select name="educationLevel" required>
+                              <option value="">Select education</option>
+                              <option value="Intermediate">Intermediate</option>
+                              <option value="Diploma">Diploma</option>
+                              <option value="B.Sc">B.Sc</option>
+                              <option value="B.Com">B.Com</option>
+                              <option value="B.Tech">B.Tech</option>
+                              <option value="B.Des">B.Des</option>
+                              <option value="MCA">MCA</option>
+                              <option value="MBA">MBA</option>
+                            </select>
+                          </label>
+                          <label>
+                            <span>Religion</span>
+                            <select name="religion" required>
+                              <option value="">Select religion</option>
+                              <option value="Hindu">Hindu</option>
+                              <option value="Muslim">Muslim</option>
+                              <option value="Christian">Christian</option>
+                              <option value="Sikh">Sikh</option>
+                              <option value="Buddhist">Buddhist</option>
+                              <option value="Other">Other</option>
+                            </select>
+                          </label>
+                          <label>
+                            <span>Category</span>
+                            <select name="category" required>
+                              <option value="">Select category</option>
+                              <option value="General">General</option>
+                              <option value="OBC">OBC</option>
+                              <option value="SC">SC</option>
+                              <option value="ST">ST</option>
+                              <option value="EWS">EWS</option>
+                            </select>
+                          </label>
+                          <label>
+                            <span>Disability</span>
+                            <select name="disability" id="traineeDisabilityToggle" required>
+                              <option value="">Select option</option>
+                              <option value="false">No</option>
+                              <option value="true">Yes</option>
+                            </select>
+                          </label>
+                          <label id="traineeDisabilityTypeField" hidden>
+                            <span>Type of Disability</span>
+                            <input type="text" name="disabilityType" />
+                          </label>
+                        </div>
+                      </div>
+                    </article>
+
+                    <article class="accordion-item">
+                      <button class="accordion-trigger" type="button" aria-expanded="false">
+                        <span><span class="accordion-icon-badge">3</span>Identity &amp; Verification</span>
+                        <span class="accordion-icon"></span>
+                      </button>
+                      <div class="accordion-content">
+                        <div class="trainee-form-grid trainee-identity-grid">
+                          <div class="trainee-upload-field" data-upload-field data-upload-name="profilePhoto" data-accept=".jpg,.jpeg,.png" data-max-size="5242880">
+                            <span>Profile Photo</span>
+                            <input type="file" name="profilePhoto" accept=".jpg,.jpeg,.png,image/jpeg,image/png" />
+                            <div class="trainee-upload-card" tabindex="0" role="button" aria-label="Upload profile photo">
+                              <div class="trainee-upload-preview" data-upload-preview></div>
+                              <div>
+                                <strong data-upload-title>Upload file</strong>
+                                <small data-upload-meta>JPG or PNG up to 5 MB</small>
+                              </div>
+                              <div class="trainee-upload-actions">
+                                <button type="button" class="table-action-link" data-upload-replace>Replace</button>
+                                <button type="button" class="table-action-link table-action-danger" data-upload-remove hidden>Remove</button>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="trainee-upload-field" data-upload-field data-upload-name="aadharCard" data-accept=".pdf,.jpg,.jpeg,.png" data-max-size="5242880">
+                            <span>Aadhar Card</span>
+                            <input type="file" name="aadharCard" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" />
+                            <div class="trainee-upload-card" tabindex="0" role="button" aria-label="Upload Aadhar card">
+                              <div class="trainee-upload-preview" data-upload-preview></div>
+                              <div>
+                                <strong data-upload-title>Upload file</strong>
+                                <small data-upload-meta>PDF, JPG, or PNG up to 5 MB</small>
+                              </div>
+                              <div class="trainee-upload-actions">
+                                <button type="button" class="table-action-link" data-upload-replace>Replace</button>
+                                <button type="button" class="table-action-link table-action-danger" data-upload-remove hidden>Remove</button>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="trainee-upload-field" data-upload-field data-upload-name="panCard" data-accept=".pdf,.jpg,.jpeg,.png" data-max-size="5242880">
+                            <span>PAN Card</span>
+                            <input type="file" name="panCard" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" />
+                            <div class="trainee-upload-card" tabindex="0" role="button" aria-label="Upload PAN card">
+                              <div class="trainee-upload-preview" data-upload-preview></div>
+                              <div>
+                                <strong data-upload-title>Upload file</strong>
+                                <small data-upload-meta>PDF, JPG, or PNG up to 5 MB</small>
+                              </div>
+                              <div class="trainee-upload-actions">
+                                <button type="button" class="table-action-link" data-upload-replace>Replace</button>
+                                <button type="button" class="table-action-link table-action-danger" data-upload-remove hidden>Remove</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </article>
+
+                    <article class="accordion-item">
+                      <button class="accordion-trigger" type="button" aria-expanded="false">
+                        <span><span class="accordion-icon-badge">4</span>Bank Details</span>
+                        <span class="accordion-icon"></span>
+                      </button>
+                      <div class="accordion-content">
+                        <div class="trainee-form-grid">
+                          <label>
+                            <span>Bank Account Number</span>
+                            <input type="text" name="bankAccountNumber" inputmode="numeric" maxlength="24" />
+                          </label>
+                          <label>
+                            <span>Bank Name</span>
+                            <input type="text" name="bankName" />
+                          </label>
+                          <label>
+                            <span>Branch</span>
+                            <input type="text" name="bankBranch" />
+                          </label>
+                          <label>
+                            <span>IFSC Code</span>
+                            <input type="text" name="ifscCode" maxlength="11" />
+                          </label>
+                          <div class="trainee-upload-field" data-upload-field data-upload-name="bankPassbook" data-accept=".pdf,.jpg,.jpeg,.png" data-max-size="5242880">
+                            <span>Bank Passbook</span>
+                            <input type="file" name="bankPassbook" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" />
+                            <div class="trainee-upload-card" tabindex="0" role="button" aria-label="Upload bank passbook">
+                              <div class="trainee-upload-preview" data-upload-preview></div>
+                              <div>
+                                <strong data-upload-title>Upload file</strong>
+                                <small data-upload-meta>PDF, JPG, or PNG up to 5 MB</small>
+                              </div>
+                              <div class="trainee-upload-actions">
+                                <button type="button" class="table-action-link" data-upload-replace>Replace</button>
+                                <button type="button" class="table-action-link table-action-danger" data-upload-remove hidden>Remove</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </article>
+
+                    <article class="accordion-item">
+                      <button class="accordion-trigger" type="button" aria-expanded="false">
+                        <span><span class="accordion-icon-badge">5</span>Address Details</span>
+                        <span class="accordion-icon"></span>
+                      </button>
+                      <div class="accordion-content">
+                        <div class="trainee-form-grid">
+                          <label>
+                            <span>City</span>
+                            <input type="text" name="city" />
+                          </label>
+                          <label>
+                            <span>Mandal</span>
+                            <input type="text" name="mandal" />
+                          </label>
+                          <label>
+                            <span>District</span>
+                            <input type="text" name="district" />
+                          </label>
+                          <label>
+                            <span>State</span>
+                            <input type="text" name="state" />
+                          </label>
+                          <label>
+                            <span>Pincode</span>
+                            <input type="text" name="pincode" inputmode="numeric" maxlength="6" />
+                          </label>
+                        </div>
+                      </div>
+                    </article>
+
+                    <article class="accordion-item">
+                      <button class="accordion-trigger" type="button" aria-expanded="false">
+                        <span><span class="accordion-icon-badge">6</span>Training &amp; Assessment</span>
+                        <span class="accordion-icon"></span>
+                      </button>
+                      <div class="accordion-content">
+                        <div class="trainee-form-grid">
+                          <label>
+                            <span>Assessment Status</span>
+                            <select name="assessmentStatus" required>
+                              <option value="">Select status</option>
+                              <option value="Not Started">Not Started</option>
+                              <option value="In Progress">In Progress</option>
+                              <option value="Completed">Completed</option>
+                              <option value="Certified">Certified</option>
+                            </select>
+                          </label>
+                          <label>
+                            <span>OJT Confirmation</span>
+                            <select name="ojtConfirmation" id="traineeOjtToggle" required>
+                              <option value="">Select option</option>
+                              <option value="false">No</option>
+                              <option value="true">Yes</option>
+                            </select>
+                          </label>
+                          <label id="traineeOjtCompletionField" hidden>
+                            <span>OJT Completion</span>
+                            <input type="date" name="ojtCompletion" />
+                          </label>
+                        </div>
+                      </div>
+                    </article>
+                  </div>
+
+                  <div class="placement-form-actions">
+                    <button class="button button-primary" type="submit" id="traineeFormSubmitButton">Save Trainee</button>
+                    <button class="button button-secondary" type="button" id="traineeFormCancelButton" hidden>Cancel Edit</button>
+                  </div>
+                  <p class="form-status" id="traineeFormStatus" role="status" aria-live="polite"></p>
+                </form>
+              </section>
+
+              <aside class="admin-panel trainee-summary-panel">
+                <div class="panel-heading">
+                  <div>
+                    <p class="eyebrow">Enrollment Snapshot</p>
+                    <h2>Operational cues</h2>
+                  </div>
+                </div>
+
+                <div class="admin-side-stack">
+                  <article class="admin-side-card">
+                    <strong>Fast onboarding</strong>
+                    <span>Capture the essentials first so the operations team can move quickly without clutter.</span>
+                  </article>
+                  <article class="admin-side-card">
+                    <strong>Structured data</strong>
+                    <span>Each accordion section maps into a nested trainee profile object so the backend stays organized and future-ready.</span>
+                  </article>
+                  <article class="admin-side-card">
+                    <strong>Placement continuity</strong>
+                    <span>Trainee profiles are built to flow directly into placement workflows through the protected admin backend.</span>
+                  </article>
+                </div>
+              </aside>
+            </div>
+
+            <section class="admin-panel trainee-table-panel reveal">
+              <div class="panel-heading table-heading">
+                <div>
+                  <p class="eyebrow">Enrolled Trainees</p>
+                  <h2>Student roster</h2>
+                </div>
+                <span class="result-count" id="traineeTableCount">0 records</span>
+              </div>
+
+              <div class="placement-toolbar trainee-toolbar">
+                <label class="search-field">
+                  <span>Search</span>
+                  <input type="search" id="traineeSearch" />
+                </label>
+
+                <label>
+                  <span>Course</span>
+                  <select id="traineeCourseFilter">
+                    <option value="all">All courses</option>
+                  </select>
+                </label>
+
+                <label>
+                  <span>Rows per page</span>
+                  <select id="traineePageSize">
+                    <option value="8">8 rows</option>
+                    <option value="12">12 rows</option>
+                    <option value="20">20 rows</option>
+                  </select>
+                </label>
+              </div>
+
+              <div class="table-shell">
+                <table class="placement-table trainee-table">
+                  <thead>
+                    <tr>
+                      <th>Trainee</th>
+                      <th>Course</th>
+                      <th>Phone</th>
+                      <th>Email</th>
+                      <th>Placements</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="traineeTableBody"></tbody>
+                </table>
+              </div>
+
+              <div class="table-pagination">
+                <button class="button button-secondary button-sm" type="button" id="traineePrevPage">Previous</button>
+                <span id="traineePaginationMeta">Page 1 of 1</span>
+                <button class="button button-secondary button-sm" type="button" id="traineeNextPage">Next</button>
+              </div>
+            </section>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="api-config.js"></script>
+    <script src="script.js"></script>
+    <script src="admin-auth.js"></script>
+    <script src="admin-trainee-enrollment.js"></script>
+  </body>
+</html>

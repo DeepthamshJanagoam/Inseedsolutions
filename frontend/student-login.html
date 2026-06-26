@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Login | INSEED Solutions</title>
+    <meta name="description" content="Student login for placement and skilling access at INSEED Solutions." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    
+        <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/png" href="assets/images/favicon.png" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <div id="site-header-root"></div>
+
+      <main>
+        <section class="contact-hero">
+          <div class="container contact-hero-grid contact-hero-grid-single reveal">
+            <div>
+              <p class="eyebrow">Student Access</p>
+              <h1>Track Placement, Training, and Career Readiness Through One Student Login</h1>
+              <p>Sign in to view placement updates, training progress, recruitment activity, and program communication in one place.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="section contact-section">
+          <div class="container contact-layout contact-layout-single">
+            <form class="contact-form admin-login-form reveal" data-login-form data-api="/api/student/login">
+              <div class="form-heading">
+                <p class="eyebrow">Login</p>
+                <h2>Login</h2>
+                <p>Enter your credentials to access student-facing placement information.</p>
+              </div>
+              <label>
+                <span>Email Address</span>
+                <input name="email" type="email" placeholder="Enter email address" required />
+              </label>
+              <label>
+                <span>Password</span>
+                <input name="password" type="password" placeholder="Enter password" required />
+              </label>
+              <button class="button button-primary contact-submit" type="submit">Login</button>
+              <p class="form-status" id="loginFormStatus" role="status" aria-live="polite"></p>
+            </form>
+          </div>
+        </section>
+      </main>
+
+      <footer class="site-footer" id="footer-contact">
+        <div class="container footer-bottom">
+          <p>&copy; 2026 INSEED Solutions Private Limited. All rights reserved.</p>
+        </div>
+      </footer>
+    </div>
+    <script src="shared-navbar.js"></script>
+    <script src="api-config.js"></script>
+    <script src="script.js"></script>
+    <script src="auth-login.js"></script>
+  </body>
+</html>
+
+
+
+
+

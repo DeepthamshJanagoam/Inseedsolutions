@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="api-base-url" content="http://localhost:4000" />
+    <title>Placement Details | INSEED Admin</title>
+    <meta
+      name="description"
+      content="Manage placement records, candidate outcomes, and company assignments from the INSEED Admin placement details module."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    
+        <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/png" href="assets/images/favicon.png" />
+  </head>
+  <body>
+    <div
+      class="admin-shell"
+      data-admin-page="placement-details"
+      data-placement-management
+      data-students-api="/api/admin/students"
+      data-institutions-api="/api/admin/institutions"
+      data-placements-api="/api/admin/placements"
+    >
+      <header class="admin-header">
+        <div class="container admin-header-row">
+                    <a class="admin-brand" href="admin-dashboard.html" aria-label="Admin dashboard home">
+            <span class="brand-mark brand-mark-logo">
+              <img class="brand-logo" src="assets/branding/inseed-logo-wide.png" alt="INSEED Solutions logo" loading="eager" decoding="async" />
+            </span>
+            <span class="brand-copy">
+              <strong>INSEED Admin</strong>
+              <small>Operations & Placement Console</small>
+            </span>
+          </a>
+
+          <nav class="admin-nav" aria-label="Admin">
+            <a href="admin-trainee-enrollment.html" data-nav-item="trainee-enrollment">Trainee Enrollment</a>
+            <a href="admin-placement-details.html" data-nav-item="placement-details" aria-current="page">Placement Details</a>
+            <a href="admin-partnerships.html" data-nav-item="partnerships">Partnerships</a>
+            <a href="admin-gallery-management.html" data-nav-item="gallery">Gallery</a>
+            <a href="admin-reports.html" data-nav-item="reports">Reports</a>
+            <a href="admin-users.html" data-nav-item="users">Users</a>
+          </nav>
+
+          <div class="admin-actions">
+            <button class="button button-secondary button-sm" type="button" id="adminPlacementLogoutButton">Logout</button>
+          </div>
+        </div>
+      </header>
+
+      <main>
+        <section class="admin-hero admin-module-hero">
+          <div class="container admin-hero-grid reveal">
+            <div>
+              <p class="eyebrow">Placement Details</p>
+              <h1>Placement management built like a modern operations module.</h1>
+              <p>
+                Add new company outcomes, monitor current status, and review placement records in one streamlined workspace with clean controls and searchable data.
+              </p>
+            </div>
+
+            <aside class="admin-hero-card">
+              <span>Module status</span>
+              <strong>Placement Management</strong>
+              <small id="placementModuleMeta">Loading protected admin data...</small>
+            </aside>
+          </div>
+        </section>
+
+        <section class="section admin-dashboard-section placement-management-section">
+          <div class="container">
+            <div class="admin-stats-grid reveal">
+              <article class="admin-metric-card">
+                <span>Total Records</span>
+                <strong id="placementMetricTotal">0</strong>
+                <small>Placement entries currently tracked</small>
+              </article>
+              <article class="admin-metric-card">
+                <span>Placed</span>
+                <strong id="placementMetricPlaced">0</strong>
+                <small>Confirmed candidate outcomes</small>
+              </article>
+              <article class="admin-metric-card">
+                <span>Average Package</span>
+                <strong id="placementMetricAverage">Rs 0</strong>
+                <small>Across visible placement records</small>
+              </article>
+              <article class="admin-metric-card">
+                <span>Top Company</span>
+                <strong id="placementMetricCompany">-</strong>
+                <small>Highest package currently listed</small>
+              </article>
+            </div>
+
+            <div class="placement-admin-grid reveal">
+              <section class="admin-panel placement-form-panel">
+                <div class="panel-heading">
+                  <div>
+                    <p class="eyebrow">Add Placement</p>
+                    <h2>Create a new placement record</h2>
+                  </div>
+                </div>
+
+                <form id="placementManagementForm" class="placement-admin-form" autocomplete="off">
+                  <input type="hidden" name="placementId" id="placementEditId" />
+                  <div class="admin-form-accordion">
+                    <article class="accordion-item is-open">
+                      <button class="accordion-trigger" type="button" aria-expanded="true">
+                        <span><span class="accordion-icon-badge">1</span>Candidate Snapshot</span>
+                        <span class="accordion-icon"></span>
+                      </button>
+                      <div class="accordion-content">
+                        <div class="placement-form-grid">
+                          <label>
+                            <span>Candidate ID</span>
+                            <input type="text" name="candidateId" id="placementCandidateIdInput" autocomplete="off" required />
+                          </label>
+
+                          <label>
+                            <span>Institution</span>
+                            <select name="institutionId" id="placementInstitutionSelect" required>
+                              <option value="">Select institution</option>
+                            </select>
+                          </label>
+
+                          <label>
+                            <span>Candidate Name</span>
+                            <input type="text" name="candidateName" id="placementCandidateName" autocomplete="off" required />
+                          </label>
+
+                          <label>
+                            <span>Skill Department</span>
+                            <select name="skillDepartment" id="placementSkillDepartment" required>
+                              <option value="">Select option</option>
+                              <option value="Yes">Yes</option>
+                              <option value="No">No</option>
+                            </select>
+                          </label>
+
+                          <div class="placement-selected-card placement-full-span" id="selectedTraineeCard">
+                            <strong>Selected trainee</strong>
+                            <span>Enter a saved candidate ID to review course and contact details.</span>
+                          </div>
+                        </div>
+                      </div>
+                    </article>
+
+                    <article class="accordion-item">
+                      <button class="accordion-trigger" type="button" aria-expanded="false">
+                        <span><span class="accordion-icon-badge">2</span>Training &amp; Assessment</span>
+                        <span class="accordion-icon"></span>
+                      </button>
+                      <div class="accordion-content">
+                        <div class="placement-form-grid">
+                          <label>
+                            <span>Assessment Status</span>
+                            <select name="assessmentStatus" id="placementAssessmentStatus" required>
+                              <option value="">Select status</option>
+                              <option value="Not Started">Not Started</option>
+                              <option value="In Progress">In Progress</option>
+                              <option value="Completed">Completed</option>
+                              <option value="Certified">Certified</option>
+                            </select>
+                          </label>
+
+                          <label>
+                            <span>OJT Confirmation</span>
+                            <select name="ojtConfirmation" id="placementOjtToggle" required>
+                              <option value="">Select option</option>
+                              <option value="false">No</option>
+                              <option value="true">Yes</option>
+                            </select>
+                          </label>
+
+                          <label id="placementOjtCompletionField" hidden>
+                            <span>OJT Completion</span>
+                            <input type="date" name="ojtCompletion" />
+                          </label>
+                        </div>
+                      </div>
+                    </article>
+
+                    <article class="accordion-item">
+                      <button class="accordion-trigger" type="button" aria-expanded="false">
+                        <span><span class="accordion-icon-badge">3</span>Placement Details</span>
+                        <span class="accordion-icon"></span>
+                      </button>
+                      <div class="accordion-content">
+                        <div class="placement-form-grid">
+                          <label>
+                            <span>Role / Designation</span>
+                            <input type="text" name="role" maxlength="80" autocomplete="off" required />
+                          </label>
+
+                          <label>
+                            <span>Company Name</span>
+                            <input type="text" name="companyName" maxlength="80" autocomplete="off" required />
+                          </label>
+
+                          <label>
+                            <span>Package (INR)</span>
+                            <input type="number" name="package" min="1" step="1000" required />
+                          </label>
+
+                          <label>
+                            <span>Date of Joining</span>
+                            <input type="date" name="placementDate" required />
+                          </label>
+
+                          <label>
+                            <span>Status</span>
+                            <select name="status" required>
+                              <option value="">Select status</option>
+                              <option value="PLACED">Placed</option>
+                              <option value="INTERVIEWING">Interviewing</option>
+                              <option value="OFFER_PENDING">Offer Pending</option>
+                              <option value="REJECTED">Rejected</option>
+                            </select>
+                          </label>
+                        </div>
+                      </div>
+                    </article>
+
+                    <article class="accordion-item" id="salaryTrackingAccordion" hidden>
+                      <button class="accordion-trigger" type="button" aria-expanded="false">
+                        <span><span class="accordion-icon-badge">4</span>Salary Tracking</span>
+                        <span class="accordion-icon"></span>
+                      </button>
+                      <div class="accordion-content">
+                        <div class="salary-tracking-panel">
+                          <p class="salary-tracking-help" id="salaryTrackingHelp">
+                            Select Date of Joining to auto-generate the next six salary months.
+                          </p>
+                          <div class="salary-table-shell">
+                            <table class="salary-tracking-table">
+                              <thead>
+                                <tr>
+                                  <th>SL.No</th>
+                                  <th>Month</th>
+                                  <th>Salary (Take Home)</th>
+                                </tr>
+                              </thead>
+                              <tbody id="salaryRowsContainer"></tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </article>
+                  </div>
+
+                  <div class="placement-form-actions">
+                    <button class="button button-primary" type="submit" id="placementSubmitButton">Add Placement</button>
+                    <button class="button button-secondary" type="button" id="placementCancelButton" hidden>Cancel Edit</button>
+                    <a class="button button-secondary" href="admin-dashboard.html">Return Dashboard</a>
+                  </div>
+                  <p class="form-status" id="placementFormStatus" role="status" aria-live="polite"></p>
+                </form>
+              </section>
+
+              <aside class="admin-panel placement-summary-panel">
+                <div class="panel-heading">
+                  <div>
+                    <p class="eyebrow">Quick Insights</p>
+                    <h2>Placement health</h2>
+                  </div>
+                </div>
+
+                <div class="admin-side-stack">
+                  <article class="admin-side-card">
+                    <strong>Pipeline visibility</strong>
+                    <span>Track placed, interviewing, and pending candidates from one filtered records view.</span>
+                  </article>
+                  <article class="admin-side-card">
+                    <strong>Structured placement payload</strong>
+                    <span>Placement submissions bundle candidate, training, salary, and outcome context into one nested object for backend readiness.</span>
+                  </article>
+                  <article class="admin-side-card">
+                    <strong>Admin-only module</strong>
+                    <span>This page verifies the JWT session before any student, institution, or placement data is loaded.</span>
+                  </article>
+                </div>
+              </aside>
+            </div>
+
+            <section class="admin-panel placement-table-panel reveal">
+              <div class="panel-heading table-heading">
+                <div>
+                  <p class="eyebrow">Placement Records</p>
+                  <h2>Professional records table</h2>
+                </div>
+                <span class="result-count" id="placementTableCount">0 records</span>
+              </div>
+
+              <div class="placement-toolbar">
+                <label class="search-field">
+                  <span>Search</span>
+                  <input type="search" id="placementAdminSearch" />
+                </label>
+
+                <label>
+                  <span>Status</span>
+                  <select id="placementAdminStatusFilter">
+                    <option value="all">All statuses</option>
+                  </select>
+                </label>
+
+                <label>
+                  <span>Institution</span>
+                  <select id="placementAdminInstitutionFilter">
+                    <option value="all">All institutions</option>
+                  </select>
+                </label>
+              </div>
+
+              <div class="table-shell">
+                <table class="placement-table placement-admin-table">
+                  <thead>
+                    <tr>
+                      <th>Trainee</th>
+                      <th>Institution</th>
+                      <th>Company</th>
+                      <th>Role</th>
+                      <th>Package</th>
+                      <th>Status</th>
+                      <th>Date</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="placementAdminTableBody"></tbody>
+                </table>
+              </div>
+            </section>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="api-config.js"></script>
+    <script src="script.js"></script>
+    <script src="admin-auth.js"></script>
+    <script src="admin-placement-details.js"></script>
+  </body>
+</html>
+
+
+
+

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="api-base-url" content="http://localhost:4000" />
+    <title>Users | INSEED Admin</title>
+    <meta name="description" content="Manage admin, trainee operator, and placement operator accounts in INSEED Admin." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    
+        <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/png" href="assets/images/favicon.png" />
+  </head>
+  <body>
+    <div class="admin-shell" data-admin-page="users" data-admin-users data-users-api="/api/admin/users">
+      <header class="admin-header">
+        <div class="container admin-header-row">
+                    <a class="admin-brand" href="admin-dashboard.html" aria-label="Admin dashboard home">
+            <span class="brand-mark brand-mark-logo">
+              <img class="brand-logo" src="assets/branding/inseed-logo-wide.png" alt="INSEED Solutions logo" loading="eager" decoding="async" />
+            </span>
+            <span class="brand-copy">
+              <strong>INSEED Admin</strong>
+              <small>Operations & Placement Console</small>
+            </span>
+          </a>
+
+          <nav class="admin-nav" aria-label="Admin">
+            <a href="admin-trainee-enrollment.html" data-nav-item="trainee-enrollment">Trainee Enrollment</a>
+            <a href="admin-placement-details.html" data-nav-item="placement-details">Placement Details</a>
+            <a href="admin-partnerships.html" data-nav-item="partnerships">Partnerships</a>
+            <a href="admin-gallery-management.html" data-nav-item="gallery">Gallery</a>
+            <a href="admin-reports.html" data-nav-item="reports">Reports</a>
+            <a href="admin-users.html" data-nav-item="users" aria-current="page">Users</a>
+          </nav>
+
+          <div class="admin-actions">
+            <button class="button button-secondary button-sm" type="button" id="adminUsersLogoutButton">Logout</button>
+          </div>
+        </div>
+      </header>
+
+      <main>
+        <section class="admin-hero admin-module-hero">
+          <div class="container admin-hero-grid reveal">
+            <div>
+              <p class="eyebrow">Users</p>
+              <h1>Manage role-based accounts without exposing passwords.</h1>
+              <p>Create admins and operators, toggle access, and reset temporary passwords while keeping credentials hidden and secure.</p>
+            </div>
+            <aside class="admin-hero-card">
+              <span>Module status</span>
+              <strong>User Management</strong>
+              <small id="usersModuleMeta">Loading protected user records...</small>
+            </aside>
+          </div>
+        </section>
+
+        <section class="section admin-dashboard-section trainee-management-section">
+          <div class="container">
+            <div class="admin-stats-grid reveal">
+              <article class="admin-metric-card">
+                <span>Total Users</span>
+                <strong id="usersMetricTotal">0</strong>
+                <small>Internal accounts provisioned</small>
+              </article>
+              <article class="admin-metric-card">
+                <span>Active Users</span>
+                <strong id="usersMetricActive">0</strong>
+                <small>Accounts that can sign in</small>
+              </article>
+              <article class="admin-metric-card">
+                <span>Password Resets Pending</span>
+                <strong id="usersMetricPassword">0</strong>
+                <small>Accounts that must update passwords</small>
+              </article>
+              <article class="admin-metric-card">
+                <span>Operators</span>
+                <strong id="usersMetricOperators">0</strong>
+                <small>Trainee and placement operators combined</small>
+              </article>
+            </div>
+
+            <div class="trainee-admin-grid reveal">
+              <section class="admin-panel trainee-form-panel">
+                <div class="panel-heading">
+                  <div>
+                    <p class="eyebrow">User Setup</p>
+                    <h2 id="userFormHeading">Create a new user</h2>
+                  </div>
+                </div>
+
+                <form class="trainee-admin-form" id="adminUsersForm">
+                  <input type="hidden" name="userId" id="adminUserEditId" />
+                  <div class="trainee-form-grid">
+                    <label>
+                      <span>Name</span>
+                      <input type="text" name="name" placeholder="Enter full name" required />
+                    </label>
+                    <label>
+                      <span>Email</span>
+                      <input type="email" name="email" placeholder="Enter email address" required />
+                    </label>
+                    <label>
+                      <span>Role</span>
+                      <select name="role" required>
+                        <option value="">Select role</option>
+                        <option value="ADMIN">Admin</option>
+                        <option value="TRAINEE_OPERATOR">Trainee Entry Operator</option>
+                        <option value="PLACEMENT_OPERATOR">Placement Entry Operator</option>
+                      </select>
+                    </label>
+                    <label id="adminUserPasswordField">
+                      <span>Temporary Password</span>
+                      <input type="password" name="password" placeholder="Create a temporary password" minlength="8" required />
+                    </label>
+                    <label>
+                      <span>Status</span>
+                      <select name="isActive" required>
+                        <option value="">Select status</option>
+                        <option value="true">Active</option>
+                        <option value="false">Inactive</option>
+                      </select>
+                    </label>
+                    <label>
+                      <span>Must Change Password</span>
+                      <select name="mustChangePassword" required>
+                        <option value="">Select option</option>
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                      </select>
+                    </label>
+                  </div>
+                  <div class="placement-form-actions">
+                    <button class="button button-primary" type="submit" id="adminUsersSubmitButton">Save User</button>
+                    <button class="button button-secondary" type="button" id="adminUsersCancelButton" hidden>Cancel Edit</button>
+                  </div>
+                  <p class="form-status" id="adminUsersFormStatus" role="status" aria-live="polite"></p>
+                </form>
+              </section>
+
+              <aside class="admin-panel trainee-summary-panel">
+                <div class="panel-heading">
+                  <div>
+                    <p class="eyebrow">Security Notes</p>
+                    <h2>Access rules</h2>
+                  </div>
+                </div>
+                <div class="admin-side-stack">
+                  <article class="admin-side-card">
+                    <strong>No password visibility</strong>
+                    <span>Passwords are never displayed after save. Admins can only set temporary passwords or trigger resets.</span>
+                  </article>
+                  <article class="admin-side-card">
+                    <strong>Forced password update</strong>
+                    <span>New operator accounts can be required to change their password on first login.</span>
+                  </article>
+                  <article class="admin-side-card">
+                    <strong>Role-based routing</strong>
+                    <span>Operators are redirected directly into their allowed workspace after sign-in.</span>
+                  </article>
+                </div>
+              </aside>
+            </div>
+
+            <section class="admin-panel trainee-table-panel reveal">
+              <div class="panel-heading table-heading">
+                <div>
+                  <p class="eyebrow">User Directory</p>
+                  <h2>Platform users</h2>
+                </div>
+                <span class="result-count" id="adminUsersTableCount">0 records</span>
+              </div>
+              <div class="table-shell">
+                <table class="placement-table trainee-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Role</th>
+                      <th>Status</th>
+                      <th>Password Policy</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="adminUsersTableBody"></tbody>
+                </table>
+              </div>
+            </section>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script src="api-config.js"></script>
+    <script src="script.js"></script>
+    <script src="admin-auth.js"></script>
+    <script src="admin-users.js"></script>
+  </body>
+</html>
+
+
+
+

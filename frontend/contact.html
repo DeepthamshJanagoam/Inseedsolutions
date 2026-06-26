@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contact | INSEED Solutions</title>
+    <meta
+      name="description"
+      content="Contact INSEED Solutions for digital delivery, staffing, skilling, and transformation support."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    
+        <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/png" href="assets/images/favicon.png" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <div id="site-header-root"></div>
+
+      <main>
+        <section class="contact-hero">
+          <div class="container contact-hero-grid reveal">
+            <div>
+              <p class="eyebrow">Contact Us</p>
+              <h1>Let's Build the Right Technology and Talent Roadmap Together</h1>
+              <p>
+                Tell us what you are trying to improve. Our team will review your goals and respond with the right next step for digital delivery, staffing, skilling, or transformation support.
+              </p>
+              <div class="contact-trust-grid">
+                <article>
+                  <strong>&lt; 24 hrs</strong>
+                  <span>Typical business response time</span>
+                </article>
+                <article>
+                  <strong>4+ Partners</strong>
+                  <span>Academic and skilling collaborations</span>
+                </article>
+                <article>
+                  <strong>Readiness-Led</strong>
+                  <span>Practical guidance before project kickoff</span>
+                </article>
+              </div>
+            </div>
+            <aside class="contact-info-card">
+              <span>Direct channels</span>
+              <a href="mailto:hello@inseedsolutions.com">hello@inseedsolutions.com</a>
+              <a href="tel:+919010210002">+91 90102 10002</a>
+              <p>#Flat No. 204, House No. 2-5-360, Satyam Sivam Enclave, Hanamkonda, Telangana - 506001</p>
+            </aside>
+          </div>
+        </section>
+
+        <section class="section contact-section">
+          <div class="container contact-layout">
+            <div class="contact-map-card reveal">
+              <div
+                class="map-visual map-embed-card"
+                id="contactMapCard"
+                aria-label="Office location in Hanamkonda, Telangana"
+              >
+                <iframe
+                  class="contact-map-frame"
+                  title="INSEED Solutions office location map"
+                  src="https://maps.google.com/maps?q=Satyam+Sivam+Enclave+Hanamkonda+Telangana&output=embed"
+                  loading="lazy"
+                  referrerpolicy="no-referrer-when-downgrade"
+                ></iframe>
+                <div class="contact-map-place" aria-hidden="true">
+                  <span class="contact-map-place-pin">
+                    <span class="contact-map-place-pin-core"></span>
+                  </span>
+                </div>
+                <button class="contact-map-activate" type="button" aria-label="Enable map interaction">
+                  Tap to interact
+                </button>
+              </div>
+              <div class="contact-map-meta">
+                <p>
+                  Flat No. 204, House No. 2-5-360, Satyam Sivam Enclave, Hanamkonda, Telangana - 506001
+                </p>
+
+                <div class="contact-map-actions">
+                  <a
+                    class="button contact-map-directions"
+                    href="https://www.google.com/maps/dir/?api=1&destination=Satyam+shivam+enclave,+Hanamkonda,+Telangana+506001"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Get Directions
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <form class="contact-form reveal" id="contact-form" data-contact-form data-api="/api/contact">
+              <div class="form-heading">
+                <p class="eyebrow">Start a Conversation</p>
+                <h2>Send us a message</h2>
+                <p>Share a few details and we'll route your inquiry to the right team.</p>
+              </div>
+
+              <div class="form-grid">
+                <label>
+                  <span>Your Name</span>
+                  <input name="name" type="text" placeholder="Enter your full name" required />
+                </label>
+                <label>
+                  <span>Email Address</span>
+                  <input name="email" type="email" placeholder="Enter email address" required />
+                </label>
+                <label>
+                  <span>Phone Number</span>
+                  <input name="phone" type="tel" placeholder="Enter phone number" required />
+                </label>
+                <label>
+                  <span>Inquiry Type</span>
+                  <select name="inquiryType" required>
+                    <option value="">Select inquiry type</option>
+                    <option>Digital Delivery</option>
+                    <option>Corporate Staffing</option>
+                    <option>Campus Partnership</option>
+                    <option>Placement / Skilling</option>
+                    <option>General Inquiry</option>
+                  </select>
+                </label>
+              </div>
+
+              <label>
+                <span>Your Message</span>
+                <textarea name="message" rows="6" placeholder="Tell us about your goals, timeline, or hiring needs..." required></textarea>
+              </label>
+
+              <button class="button button-primary contact-submit" type="submit">Submit Inquiry</button>
+              <p class="form-status" id="contactFormStatus" role="status" aria-live="polite"></p>
+            </form>
+          </div>
+        </section>
+      </main>
+
+      <footer class="site-footer" id="footer-contact">
+        <div class="container footer-grid">
+          <div class="footer-column">
+                        <div class="footer-brand">
+              <div class="footer-brand-logo">
+                <img src="assets/branding/inseed-logo-footer.png" alt="INSEED Solutions logo" loading="lazy" decoding="async" />
+              </div>
+              <div class="footer-brand-text">
+                <strong>INSEED Solutions</strong>
+                <small>Enterprise Technology & Talent</small>
+              </div>
+            </div>
+            <p>
+              We deliver cutting-edge digital solutions, staffing support, and skilling services
+              that help organizations grow with confidence in a fast-changing digital landscape.
+            </p>
+          </div>
+          <div class="footer-column">
+            <h3>Services</h3>
+            <ul>
+              <li><a>Skill Development</a></li>
+              <li><a>Web App Development</a></li>
+              <li><a>Recruitment & RPO</a></li>
+              <li><a>IT & Non-IT Staffing</a></li>
+              <li><a>HR Consulting</a></li>
+            </ul>
+          </div>
+          <div class="footer-column">
+            <h3>Useful Links</h3>
+            <ul>
+              <li><a href="index.html">Home</a></li>
+              <li><a href="services.html">Services</a></li>
+              <li><a href="case-studies.html">Case Studies</a></li>
+              <li><a href="placement.html">Placement Dashboard</a></li>
+              <li><a href="contact.html">Contact</a></li>
+            </ul>
+          </div>
+          <div class="footer-column">
+            <h3>Contact Info</h3>
+            <ul class="contact-list">
+              <li>Flat No. 204, House No. 2-5-360
+                 Satyam Sivam Enclave, Hanamkonda.
+                 Telangana-506001</li>
+              <li><a href="tel:+919010210002">+91 90102 10002</a></li>
+              <li><a href="mailto:hello@inseedsolutions.com">hello@inseedsolutions.com</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <div class="container">
+            <p>&copy; 2026 INSEED Solutions Private Limited. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+    <script src="shared-navbar.js"></script>
+    <script src="api-config.js"></script>
+    <script src="script.js"></script>
+    <script src="contact-form.js"></script>
+  </body>
+</html>
+
+
+
+
+
+
+
+

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="api-base-url" content="http://localhost:4000" />
+    <title>Gallery Management | INSEED Admin</title>
+    <meta name="description" content="Manage public gallery images for INSEED Solutions." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/png" href="assets/images/favicon.png" />
+  </head>
+  <body>
+    <div class="admin-shell" data-admin-page="gallery" data-admin-gallery data-gallery-api="/api/gallery">
+      <header class="admin-header">
+        <div class="container admin-header-row">
+          <a class="admin-brand" href="admin-dashboard.html" aria-label="Admin dashboard home">
+            <span class="brand-mark brand-mark-logo">
+              <img class="brand-logo" src="assets/branding/inseed-logo-wide.png" alt="INSEED Solutions logo" loading="eager" decoding="async" />
+            </span>
+            <span class="brand-copy">
+              <strong>INSEED Admin</strong>
+              <small>Operations & Placement Console</small>
+            </span>
+          </a>
+
+          <nav class="admin-nav" aria-label="Admin">
+            <a href="admin-trainee-enrollment.html" data-nav-item="trainee-enrollment">Trainee Enrollment</a>
+            <a href="admin-placement-details.html" data-nav-item="placement-details">Placement Details</a>
+            <a href="admin-partnerships.html" data-nav-item="partnerships">Partnerships</a>
+            <a href="admin-gallery-management.html" data-nav-item="gallery" aria-current="page">Gallery</a>
+            <a href="admin-reports.html" data-nav-item="reports">Reports</a>
+            <a href="admin-users.html" data-nav-item="users">Users</a>
+          </nav>
+
+          <div class="admin-actions">
+            <button class="button button-secondary button-sm" type="button" id="adminGalleryLogoutButton">Logout</button>
+          </div>
+        </div>
+      </header>
+
+      <main>
+        <section class="admin-hero admin-module-hero">
+          <div class="container admin-hero-grid is-visible">
+            <div>
+              <p class="eyebrow">Gallery Management</p>
+              <h1>Manage public gallery images for training, skilling, and partnership activity.</h1>
+              <p>Upload new images, preview selections before publishing, edit display text, and remove outdated gallery items.</p>
+            </div>
+
+            <aside class="admin-hero-card">
+              <span>Publishing status</span>
+              <strong>Live gallery sync</strong>
+              <small id="adminGalleryStatus">Loading gallery images...</small>
+            </aside>
+          </div>
+        </section>
+
+        <section class="section admin-dashboard-section">
+          <div class="container">
+            <div class="admin-gallery-layout is-visible">
+              <section class="admin-panel">
+                <div class="panel-heading">
+                  <div>
+                    <p class="eyebrow">Upload</p>
+                    <h2>Add gallery image</h2>
+                  </div>
+                </div>
+                <form class="gallery-upload-form" id="galleryUploadForm" enctype="multipart/form-data">
+                  <label>
+                    <span>Image file</span>
+                    <input type="file" name="galleryImage" id="galleryImageInput" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" required />
+                  </label>
+                  <figure class="gallery-upload-preview" id="galleryUploadPreview" hidden>
+                    <img alt="Selected gallery image preview" />
+                    <figcaption>Preview ready</figcaption>
+                  </figure>
+                  <label>
+                    <span>Image title</span>
+                    <input type="text" name="title" placeholder="Optional image title" />
+                  </label>
+                  <label>
+                    <span>Image caption / description</span>
+                    <textarea name="caption" rows="3" placeholder="Optional short caption"></textarea>
+                  </label>
+                  <button class="button button-primary" type="submit" id="galleryUploadButton">Upload Image</button>
+                </form>
+              </section>
+
+              <section class="admin-panel admin-gallery-panel">
+                <div class="panel-heading table-heading">
+                  <div>
+                    <p class="eyebrow">Gallery Library</p>
+                    <h2>Existing gallery images</h2>
+                  </div>
+                  <a class="table-action-link" href="gallery.html" target="_blank" rel="noreferrer">View public gallery</a>
+                </div>
+                <div class="admin-gallery-grid" id="adminGalleryGrid"></div>
+              </section>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="api-config.js"></script>
+    <script src="script.js"></script>
+    <script src="admin-auth.js"></script>
+    <script src="admin-gallery.js"></script>
+  </body>
+</html>

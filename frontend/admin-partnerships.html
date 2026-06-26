@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="api-base-url" content="http://localhost:4000" />
+    <title>Partnership Agreements | INSEED Admin</title>
+    <meta
+      name="description"
+      content="Create, update, and publish campus partnership agreements from the protected INSEED Admin dashboard."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    
+        <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/png" href="assets/images/favicon.png" />
+  </head>
+  <body>
+    <div class="admin-shell" data-admin-page="partnerships" data-admin-partnerships data-partnerships-api="/api/admin/partnerships">
+      <header class="admin-header">
+        <div class="container admin-header-row">
+                    <a class="admin-brand" href="admin-dashboard.html" aria-label="Admin dashboard home">
+            <span class="brand-mark brand-mark-logo">
+              <img class="brand-logo" src="assets/branding/inseed-logo-wide.png" alt="INSEED Solutions logo" loading="eager" decoding="async" />
+            </span>
+            <span class="brand-copy">
+              <strong>INSEED Admin</strong>
+              <small>Operations & Placement Console</small>
+            </span>
+          </a>
+
+          <nav class="admin-nav" aria-label="Admin">
+            <a href="admin-trainee-enrollment.html" data-nav-item="trainee-enrollment">Trainee Enrollment</a>
+            <a href="admin-placement-details.html" data-nav-item="placement-details">Placement Details</a>
+            <a href="admin-partnerships.html" data-nav-item="partnerships" aria-current="page">Partnerships</a>
+            <a href="admin-gallery-management.html" data-nav-item="gallery">Gallery</a>
+            <a href="admin-reports.html" data-nav-item="reports">Reports</a>
+            <a href="admin-users.html" data-nav-item="users">Users</a>
+          </nav>
+
+          <div class="admin-actions">
+            <button class="button button-secondary button-sm" type="button" id="adminPartnershipLogoutButton">Logout</button>
+          </div>
+        </div>
+      </header>
+
+      <main>
+        <section class="admin-hero admin-module-hero">
+          <div class="container admin-hero-grid reveal">
+            <div>
+              <p class="eyebrow">Partnership Agreements</p>
+              <h1>Manage public-facing institutional agreement cards without touching the page design.</h1>
+              <p>
+                Create, edit, and publish campus collaboration agreements from one protected module, then let the existing partnerships page render them dynamically.
+              </p>
+            </div>
+
+            <aside class="admin-hero-card">
+              <span>Publishing status</span>
+              <strong>Live agreement sync</strong>
+              <small id="partnershipAdminMeta">Loading partnership agreements...</small>
+            </aside>
+          </div>
+        </section>
+
+        <section class="section admin-dashboard-section trainee-management-section">
+          <div class="container">
+            <div class="admin-stats-grid reveal">
+              <article class="admin-metric-card">
+                <span>Total Agreements</span>
+                <strong id="partnershipMetricTotal">0</strong>
+                <small>Partnership cards stored in the system</small>
+              </article>
+              <article class="admin-metric-card">
+                <span>Live Agreements</span>
+                <strong id="partnershipMetricActive">0</strong>
+                <small>Cards currently visible on the public page</small>
+              </article>
+              <article class="admin-metric-card">
+                <span>Unique Tags</span>
+                <strong id="partnershipMetricTags">0</strong>
+                <small>Program themes across all agreements</small>
+              </article>
+              <article class="admin-metric-card">
+                <span>Last Slot</span>
+                <strong id="partnershipMetricSort">0</strong>
+                <small>Highest active sort order in use</small>
+              </article>
+            </div>
+
+            <div class="trainee-admin-grid reveal">
+              <section class="admin-panel trainee-form-panel">
+                <div class="panel-heading">
+                  <div>
+                    <p class="eyebrow">Agreement Editor</p>
+                    <h2 id="partnershipFormHeading">Create a new partnership agreement</h2>
+                  </div>
+                </div>
+
+                <form id="partnershipAgreementForm" class="trainee-admin-form" enctype="multipart/form-data">
+                  <input type="hidden" name="agreementId" id="partnershipAgreementId" />
+
+                  <div class="trainee-form-grid">
+                    <label>
+                      <span>Institution Name</span>
+                      <input type="text" name="name" placeholder="Enter institution name" required />
+                    </label>
+
+                    <label>
+                      <span>Short Code</span>
+                      <input type="text" name="shortCode" maxlength="4" placeholder="Enter short code" required />
+                    </label>
+
+                    <label>
+                      <span>Tags</span>
+                      <textarea name="tags" rows="4" placeholder="Enter one tag per line" required></textarea>
+                    </label>
+
+                    <label>
+                      <span>Highlights</span>
+                      <textarea name="bullets" rows="4" placeholder="One highlight per line" required></textarea>
+                    </label>
+
+                    <label>
+                      <span>MOU Button Label</span>
+                      <input type="text" name="mouLabel" placeholder="View MOU" />
+                    </label>
+
+                    <label>
+                      <span>Upload MOU Document</span>
+                      <input type="file" name="mouDocument" id="mouDocumentInput" accept=".pdf,application/pdf" />
+                    </label>
+
+                    <label>
+                      <span>Summary</span>
+                      <input type="text" name="summary" placeholder="Short operational note for admin reference" />
+                    </label>
+
+                    <label>
+                      <span>Sort Order</span>
+                      <input type="number" name="sortOrder" min="0" step="1" placeholder="Enter display order" />
+                    </label>
+
+                    <label class="partnership-toggle-field">
+                      <span>Visibility</span>
+                      <select name="isActive" required>
+                        <option value="">Select visibility</option>
+                        <option value="true">Visible on partnerships page</option>
+                        <option value="false">Draft / hidden</option>
+                      </select>
+                    </label>
+
+                    <div class="trainee-highlight-card" id="partnershipInsightCard">
+                      <strong>Publishing workflow</strong>
+                      <span>Cards marked visible are pulled onto the public partnerships page automatically, without changing the current layout.</span>
+                    </div>
+
+                    <div class="trainee-highlight-card" id="partnershipDocumentCard">
+                      <strong>Current MOU document</strong>
+                      <span>No document uploaded yet.</span>
+                    </div>
+                  </div>
+
+                  <div class="placement-form-actions">
+                    <button class="button button-primary" type="submit" id="partnershipSubmitButton">Save Agreement</button>
+                    <button class="button button-secondary" type="button" id="partnershipCancelButton" hidden>Cancel Edit</button>
+                  </div>
+                  <p class="form-status" id="partnershipFormStatus" role="status" aria-live="polite"></p>
+                </form>
+              </section>
+
+              <aside class="admin-panel trainee-summary-panel">
+                <div class="panel-heading">
+                  <div>
+                    <p class="eyebrow">Agreement Controls</p>
+                    <h2>Publishing notes</h2>
+                  </div>
+                </div>
+
+                <div class="admin-side-stack">
+                  <article class="admin-side-card">
+                    <strong>No public UI rewrite</strong>
+                    <span>The current partnerships page keeps the same cards, spacing, and styling while loading live agreement data from the backend.</span>
+                  </article>
+                  <article class="admin-side-card">
+                    <strong>Program tags included</strong>
+                    <span>Add one tag per line to preserve the current chip-based card design on the public page.</span>
+                  </article>
+                  <article class="admin-side-card">
+                    <strong>Draft safely</strong>
+                    <span>Use the visibility selector to prepare cards in admin without publishing them publicly until you're ready.</span>
+                  </article>
+                </div>
+              </aside>
+            </div>
+
+            <section class="admin-panel trainee-table-panel reveal">
+              <div class="panel-heading table-heading">
+                <div>
+                  <p class="eyebrow">Agreement Records</p>
+                  <h2>Partnership library</h2>
+                </div>
+                <span class="result-count" id="partnershipTableCount">0 records</span>
+              </div>
+
+              <div class="table-shell">
+                <table class="placement-table trainee-table">
+                  <thead>
+                    <tr>
+                      <th>Institution</th>
+                      <th>Tags</th>
+                      <th>Status</th>
+                      <th>Order</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="partnershipTableBody"></tbody>
+                </table>
+              </div>
+            </section>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="api-config.js"></script>
+    <script src="script.js"></script>
+    <script src="admin-auth.js"></script>
+    <script src="admin-partnerships.js"></script>
+  </body>
+</html>
+
+
+

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="api-base-url" content="http://localhost:4000" />
+    <title>Reports | INSEED Admin</title>
+    <meta
+      name="description"
+      content="Modern analytics dashboard for trainee, placement, and institution reports in INSEED Admin."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    
+        <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/png" href="assets/images/favicon.png" />
+  </head>
+  <body>
+    <div class="admin-shell" data-admin-page="reports" data-admin-reports data-api="/api/admin/reports">
+      <header class="admin-header">
+        <div class="container admin-header-row">
+                    <a class="admin-brand" href="admin-dashboard.html" aria-label="Admin dashboard home">
+            <span class="brand-mark brand-mark-logo">
+              <img class="brand-logo" src="assets/branding/inseed-logo-wide.png" alt="INSEED Solutions logo" loading="eager" decoding="async" />
+            </span>
+            <span class="brand-copy">
+              <strong>INSEED Admin</strong>
+              <small>Operations & Placement Console</small>
+            </span>
+          </a>
+
+          <nav class="admin-nav" aria-label="Admin">
+            <a href="admin-trainee-enrollment.html" data-nav-item="trainee-enrollment">Trainee Enrollment</a>
+            <a href="admin-placement-details.html" data-nav-item="placement-details">Placement Details</a>
+            <a href="admin-partnerships.html" data-nav-item="partnerships">Partnerships</a>
+            <a href="admin-gallery-management.html" data-nav-item="gallery">Gallery</a>
+            <a href="admin-reports.html" data-nav-item="reports" aria-current="page">Reports</a>
+            <a href="admin-users.html" data-nav-item="users">Users</a>
+          </nav>
+
+          <div class="admin-actions">
+            <button class="button button-secondary button-sm" type="button" id="adminReportsLogoutButton">Logout</button>
+          </div>
+        </div>
+      </header>
+
+      <main class="reports-page">
+        <section class="admin-hero admin-module-hero">
+          <div class="container admin-hero-grid reveal">
+            <div>
+              <p class="eyebrow">Reports</p>
+              <h1>Monitor pipeline trends, hiring outcomes, and partner performance from one clean workspace.</h1>
+              <p>Generate filtered analytics, review distribution trends, and export the exact report view your team needs.</p>
+              <p class="reports-meta" id="reportsMeta">Loading reports workspace...</p>
+            </div>
+
+            <aside class="admin-hero-card">
+              <span>Module status</span>
+              <strong>Reports</strong>
+              <small>Protected reporting data loaded securely.</small>
+            </aside>
+          </div>
+        </section>
+
+        <section class="section admin-dashboard-section trainee-management-section">
+          <div class="container">
+            <section class="admin-stats-grid reveal">
+              <article class="admin-metric-card" data-report-card>
+                <span id="reportsStat1Label">Total Records</span>
+                <strong id="reportsStat1Value">0</strong>
+                <small id="reportsStat1Subtext">Rows in the current report</small>
+              </article>
+              <article class="admin-metric-card" data-report-card>
+                <span id="reportsStat2Label">Placed</span>
+                <strong id="reportsStat2Value">0</strong>
+                <small id="reportsStat2Subtext">Confirmed outcomes</small>
+              </article>
+              <article class="admin-metric-card" data-report-card>
+                <span id="reportsStat3Label">Average Package</span>
+                <strong id="reportsStat3Value">Rs 0</strong>
+                <small id="reportsStat3Subtext">Across visible data</small>
+              </article>
+              <article class="admin-metric-card" data-report-card>
+                <span id="reportsStat4Label">Top Label</span>
+                <strong id="reportsStat4Value">-</strong>
+                <small id="reportsStat4Subtext">Leading segment in this report</small>
+              </article>
+              <article class="admin-metric-card" data-report-card>
+                <span id="reportsStat5Label">Top Institution</span>
+                <strong id="reportsStat5Value">-</strong>
+                <small id="reportsStat5Subtext">Partner performance spotlight</small>
+              </article>
+            </section>
+
+            <div class="trainee-admin-grid reports-admin-grid reveal">
+              <section class="admin-panel trainee-form-panel reports-filter-panel">
+                <div class="panel-heading">
+                  <div>
+                    <p class="eyebrow">Report Builder</p>
+                    <h2>Generate report view</h2>
+                    <p class="reports-panel-copy">Refine the dataset, run the report, and export the exact view your operations team needs.</p>
+                  </div>
+                </div>
+
+                <form class="trainee-admin-form reports-filter-form" id="reportsFilterForm">
+                  <div class="trainee-form-grid reports-filter-grid">
+                    <label>
+                      <span>Report Type</span>
+                      <select id="reportsTypeFilter" name="reportType" required>
+                        <option value="">Select report type</option>
+                        <option value="trainee">Trainee Details</option>
+                        <option value="placement">Placement Details</option>
+                        <option value="institution">Institution Summary</option>
+                        <option value="skill-placement">Skill Placement Details</option>
+                      </select>
+                    </label>
+
+                    <label>
+                      <span>Course</span>
+                      <select id="reportsCourseFilter" name="course">
+                        <option value="">All Courses</option>
+                      </select>
+                    </label>
+
+                    <label>
+                      <span>Qualification</span>
+                      <select id="reportsQualificationFilter" name="qualification">
+                        <option value="">All Qualifications</option>
+                      </select>
+                    </label>
+
+                    <label>
+                      <span>Date of Joining</span>
+                      <input type="date" id="reportsDateFilter" name="dateOfJoining" />
+                    </label>
+
+                    <label>
+                      <span>Institution</span>
+                      <select id="reportsInstitutionFilter" name="institution">
+                        <option value="">All Institutions</option>
+                      </select>
+                    </label>
+
+                    <label>
+                      <span>Company</span>
+                      <select id="reportsCompanyFilter" name="company">
+                        <option value="">All Companies</option>
+                      </select>
+                    </label>
+
+                    <label class="reports-filter-full">
+                      <span>Search</span>
+                      <input
+                        type="search"
+                        id="reportsSearchFilter"
+                        name="search"
+                        placeholder="Search candidate ID, trainee name, company, or role"
+                      />
+                    </label>
+                  </div>
+                  <p class="form-status" id="reportsFilterStatus" role="status" aria-live="polite"></p>
+
+                  <div class="placement-form-actions reports-filter-actions">
+                    <button class="button button-primary" type="submit">Generate Report</button>
+                  </div>
+                </form>
+              </section>
+
+              <aside class="admin-panel trainee-summary-panel reports-visuals-panel">
+                <div class="panel-heading">
+                  <div>
+                    <p class="eyebrow">Analytics Overview</p>
+                    <h2>Performance signals</h2>
+                    <p class="reports-panel-copy">A compact summary of the most relevant breakdowns for the current report configuration.</p>
+                  </div>
+                </div>
+
+                <div class="reports-overview-card">
+                  <article class="reports-overview-section">
+                    <strong id="reportsChartTitle1">Status Distribution</strong>
+                    <div class="bar-chart reports-bar-chart" id="reportsChart1"></div>
+                  </article>
+
+                  <article class="reports-overview-section">
+                    <strong id="reportsChartTitle2">Course Distribution</strong>
+                    <div class="bar-chart reports-bar-chart" id="reportsChart2"></div>
+                  </article>
+
+                  <article class="reports-overview-section">
+                    <strong id="reportsChartTitle3">Company-wise Hiring Count</strong>
+                    <div class="bar-chart reports-bar-chart" id="reportsChart3"></div>
+                  </article>
+
+                  <article class="reports-overview-section">
+                    <strong id="reportsChartTitle4">Institution-wise Placement Chart</strong>
+                    <div class="bar-chart reports-bar-chart" id="reportsChart4"></div>
+                  </article>
+                </div>
+              </aside>
+            </div>
+
+            <section class="admin-panel trainee-table-panel reveal reports-table-panel">
+              <div class="panel-heading table-heading">
+                <div>
+                  <p class="eyebrow">Reports Table</p>
+                  <h2 id="reportsTableHeading">Trainee Report</h2>
+                </div>
+                <div class="reports-export-actions">
+                  <button class="button button-secondary button-sm" type="button" id="exportExcelButton">Export Excel</button>
+                  <button class="button button-secondary button-sm" type="button" id="exportPdfButton">Export PDF</button>
+                </div>
+              </div>
+
+              <div class="table-shell reports-table-shell">
+                <table class="placement-table trainee-table reports-table">
+                  <thead id="reportsTableHead"></thead>
+                  <tbody id="reportsTableBody"></tbody>
+                </table>
+              </div>
+
+              <div class="table-pagination reports-pagination">
+                <span id="reportsPaginationSummary">Showing 0-0 of 0 records</span>
+                <div class="reports-pagination-actions" id="reportsPaginationActions"></div>
+              </div>
+            </section>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="api-config.js"></script>
+    <script src="script.js"></script>
+    <script src="admin-auth.js"></script>
+    <script src="admin-reports.js"></script>
+  </body>
+</html>
+
+
+
+

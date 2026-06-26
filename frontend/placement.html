@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Placement Dashboard | INSEED Solutions</title>
+    <meta
+      name="description"
+      content="Track student placements, packages, training programs, and placement pipeline performance in a modern analytics dashboard."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    
+        <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/png" href="assets/images/favicon.png" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <div id="site-header-root"></div>
+
+      <main>
+        <section class="dashboard-hero">
+          <div class="container dashboard-hero-content reveal">
+            <div>
+              <p class="eyebrow">Placement Analytics</p>
+              <h1>Student Placement & Training Intelligence Dashboard</h1>
+              <p>
+                Monitor placement outcomes, package trends, training coverage, and candidate pipeline status from a single executive view.
+              </p>
+            </div>
+            <div class="dashboard-sync-card">
+              <span>Backend endpoint</span>
+              <strong>/api/placements</strong>
+              <small id="dataStatus">Connecting to placement data...</small>
+            </div>
+          </div>
+        </section>
+
+        <section class="section dashboard-section" data-placement-dashboard data-api="/api/placements">
+          <div class="container">
+            <div class="dashboard-stat-grid reveal">
+              <article class="dashboard-stat-card">
+                <span>Total Candidates</span>
+                <strong id="statTotal">0</strong>
+                <small>Tracked across partner programs</small>
+              </article>
+              <article class="dashboard-stat-card">
+                <span>Placed Students</span>
+                <strong id="statPlaced">0</strong>
+                <small>Confirmed offer outcomes</small>
+              </article>
+              <article class="dashboard-stat-card">
+                <span>Average Package</span>
+                <strong id="statAvg">Rs 0</strong>
+                <small>Based on visible records</small>
+              </article>
+              <article class="dashboard-stat-card">
+                <span>Highest Package</span>
+                <strong id="statMax">Rs 0</strong>
+                <small>Top confirmed package</small>
+              </article>
+            </div>
+
+            <div class="dashboard-controls reveal">
+              <label class="search-field">
+                <span>Search</span>
+                <input id="placementSearch" type="search" placeholder="Search name, company, course..." />
+              </label>
+              <label>
+                <span>Status</span>
+                <select id="statusFilter">
+                  <option value="all">All statuses</option>
+                </select>
+              </label>
+              <label>
+                <span>Company</span>
+                <select id="companyFilter">
+                  <option value="all">All companies</option>
+                </select>
+              </label>
+              <label>
+                <span>Institution</span>
+                <select id="institutionFilter">
+                  <option value="all">All institutions</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="dashboard-chart-grid reveal">
+              <article class="dashboard-panel">
+                <div class="panel-heading">
+                  <div>
+                    <p class="eyebrow">Package Distribution</p>
+                    <h2>Packages by Company</h2>
+                  </div>
+                </div>
+                <div class="bar-chart" id="companyChart" aria-label="Package chart by company"></div>
+              </article>
+
+              <article class="dashboard-panel">
+                <div class="panel-heading">
+                  <div>
+                    <p class="eyebrow">Pipeline Health</p>
+                    <h2>Status Mix</h2>
+                  </div>
+                </div>
+                <div class="donut-wrap">
+                  <div class="donut-chart" id="statusDonut"></div>
+                  <div class="donut-legend" id="statusLegend"></div>
+                </div>
+              </article>
+            </div>
+
+            <article class="dashboard-panel reveal">
+              <div class="panel-heading table-heading">
+                <div>
+                  <p class="eyebrow">Placement Records</p>
+                  <h2>Student Placement Data</h2>
+                </div>
+                <span id="resultCount" class="result-count">0 records</span>
+              </div>
+
+              <div class="table-shell">
+                <table class="placement-table">
+                  <thead>
+                    <tr>
+                      <th><button data-sort="id">Sl. No.</button></th>
+                      <th><button data-sort="student">Student</button></th>
+                      <th><button data-sort="company">Company</button></th>
+                      <th><button data-sort="package">Package</button></th>
+                      <th><button data-sort="course">Courses</button></th>
+                      <th><button data-sort="status">Status</button></th>
+                      <th><button data-sort="contact">Contact</button></th>
+                    </tr>
+                  </thead>
+                  <tbody id="placementTableBody"></tbody>
+                </table>
+              </div>
+            </article>
+          </div>
+        </section>
+      </main>
+
+      <footer class="site-footer" id="footer-contact">
+        <div class="container footer-grid">
+          <div class="footer-column">
+                        <div class="footer-brand">
+              <div class="footer-brand-logo">
+                <img src="assets/branding/inseed-logo-footer.png" alt="INSEED Solutions logo" loading="lazy" decoding="async" />
+              </div>
+              <div class="footer-brand-text">
+                <strong>INSEED Solutions</strong>
+                <small>Enterprise Technology & Talent</small>
+              </div>
+            </div>
+            <p>
+              We deliver cutting-edge digital solutions, staffing support, and skilling services
+              that help organizations grow with confidence in a fast-changing digital landscape.
+            </p>
+          </div>
+          <div class="footer-column">
+            <h3>Services</h3>
+            <ul>
+              <li><a>Skill Development</a></li>
+              <li><a>Web App Development</a></li>
+              <li><a>Recruitment & RPO</a></li>
+              <li><a>IT & Non-IT Staffing</a></li>
+              <li><a>HR Consulting</a></li>
+            </ul>
+          </div>
+          <div class="footer-column">
+            <h3>Useful Links</h3>
+            <ul>
+              <li><a href="index.html">Home</a></li>
+              <li><a href="partnerships.html">Partnerships</a></li>
+              <li><a href="placement.html">Placement Dashboard</a></li>
+              <li><a href="case-studies.html">Case Studies</a></li>
+            </ul>
+          </div>
+          <div class="footer-column">
+            <h3>Contact Info</h3>
+            <ul class="contact-list">
+              <li>Flat No. 204, House No. 2-5-360
+                 Satyam Sivam Enclave, Hanamkonda.
+                 Telangana-506001</li>
+              <li><a href="tel:+919010210002">+91 90102 10002</a></li>
+              <li><a href="mailto:hello@inseedsolutions.com">hello@inseedsolutions.com</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <div class="container">
+            <p>&copy; 2026 INSEED Solutions Private Limited. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+    <script src="shared-navbar.js"></script>
+    <script src="api-config.js"></script>
+    <script src="script.js"></script>
+    <script src="placement-dashboard.js"></script>
+  </body>
+</html>
+
+
+
+
+
+
+

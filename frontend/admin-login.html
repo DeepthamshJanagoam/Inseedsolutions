@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="api-base-url" content="http://localhost:4000" />
+    <title>Admin Login | INSEED Solutions</title>
+    <meta name="description" content="Secure admin login for INSEED Solutions." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    
+        <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/png" href="assets/images/favicon.png" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <div id="site-header-root"></div>
+
+      <main>
+        <section class="contact-hero">
+          <div class="container contact-hero-grid contact-hero-grid-single reveal">
+            <div>
+              <p class="eyebrow">Admin Access</p>
+              <h1>Manage Operational Workflows Through a Secure Admin Login</h1>
+              <p>Access placement records, inquiries, skilling data, and internal workflows from the secure admin console.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="section contact-section">
+          <div class="container contact-layout contact-layout-single">
+            <form
+              class="contact-form admin-login-form reveal"
+              data-login-form
+              data-api="/api/admin/login"
+              data-redirect="admin-dashboard.html"
+              autocomplete="off"
+            >
+              <div class="form-heading">
+                <p class="eyebrow">Secure Login</p>
+                <h2>Login</h2>
+                <p>Enter your authorized admin or operator credentials to continue.</p>
+              </div>
+              <label>
+                <span>Email Address</span>
+                <input name="email" type="email" placeholder="Enter email address" autocomplete="off" required />
+              </label>
+              <label>
+                <span>Password</span>
+                <input name="password" type="password" placeholder="Enter password" autocomplete="new-password" required />
+              </label>
+              <button class="button button-primary contact-submit" type="submit">Login</button>
+              <p class="form-status" id="loginFormStatus" role="status" aria-live="polite"></p>
+            </form>
+          </div>
+        </section>
+      </main>
+
+      <footer class="site-footer" id="footer-contact">
+        <div class="container footer-bottom">
+          <p>&copy; 2026 INSEED Solutions Private Limited. All rights reserved.</p>
+        </div>
+      </footer>
+    </div>
+    <script src="shared-navbar.js"></script>
+    <script src="api-config.js"></script>
+    <script src="script.js"></script>
+    <script src="auth-login.js"></script>
+  </body>
+</html>
+
+
+
+
+

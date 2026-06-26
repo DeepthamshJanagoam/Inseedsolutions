@@ -1,0 +1,98 @@
+[
+  {
+    "id": 1,
+    "student": "Ravi Kumar",
+    "company": "Infosys",
+    "package": 600000,
+    "course": "Java, Data Structures",
+    "contact": "ravi@example.com",
+    "status": "Placed",
+    "institution": "New Science Degree College",
+    "month": "Jan",
+    "industry": "IT Services"
+  },
+  {
+    "id": 2,
+    "student": "Sita Reddy",
+    "company": "TCS",
+    "package": 550000,
+    "course": "Python, Web Development",
+    "contact": "sita@example.com",
+    "status": "Placed",
+    "institution": "Samatha Educational Society",
+    "month": "Feb",
+    "industry": "IT Services"
+  },
+  {
+    "id": 3,
+    "student": "Ajay Singh",
+    "company": "Capgemini",
+    "package": 700000,
+    "course": "Angular, Node.js",
+    "contact": "ajay@example.com",
+    "status": "Placed",
+    "institution": "Sri Veenadhari Educational Society",
+    "month": "Mar",
+    "industry": "Consulting"
+  },
+  {
+    "id": 4,
+    "student": "Meera Sharma",
+    "company": "Wipro",
+    "package": 480000,
+    "course": "React",
+    "contact": "meera@example.com",
+    "status": "Interviewing",
+    "institution": "Rural Development Foundation",
+    "month": "Mar",
+    "industry": "Digital"
+  },
+  {
+    "id": 5,
+    "student": "Kiran Patel",
+    "company": "HCLTech",
+    "package": 620000,
+    "course": "Cloud, DevOps",
+    "contact": "kiran@example.com",
+    "status": "Placed",
+    "institution": "New Science Degree College",
+    "month": "Apr",
+    "industry": "Cloud"
+  },
+  {
+    "id": 6,
+    "student": "Neha Rao",
+    "company": "Deloitte",
+    "package": 820000,
+    "course": "Data Analytics, SQL",
+    "contact": "neha@example.com",
+    "status": "Offer Pending",
+    "institution": "Samatha Educational Society",
+    "month": "Apr",
+    "industry": "Consulting"
+  },
+  {
+    "id": 7,
+    "student": "Arjun Reddy",
+    "company": "Tech Mahindra",
+    "package": 510000,
+    "course": "JavaScript, APIs",
+    "contact": "arjun@example.com",
+    "status": "Placed",
+    "institution": "Sri Veenadhari Educational Society",
+    "month": "May",
+    "industry": "IT Services"
+  },
+  {
+    "id": 8,
+    "student": "Priya Nair",
+    "company": "Accenture",
+    "package": 760000,
+    "course": "Full Stack, Testing",
+    "contact": "priya@example.com",
+    "status": "Placed",
+    "institution": "Rural Development Foundation",
+    "month": "May",
+    "industry": "Consulting"
+  }
+]

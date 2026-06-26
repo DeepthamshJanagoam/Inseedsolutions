@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="api-base-url" content="http://localhost:4000" />
+    <title>Gallery | INSEED Solutions</title>
+    <meta
+      name="description"
+      content="Explore INSEED Solutions training, skilling, campus engagement, and placement readiness moments."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/png" href="assets/images/favicon.png" />
+  </head>
+  <body>
+    <div class="page-shell" data-gallery-page data-gallery-api="/api/gallery">
+      <div id="site-header-root"></div>
+
+      <main>
+        <section class="subpage-hero gallery-hero">
+          <div class="subpage-hero-media gallery-hero-media"></div>
+          <div class="subpage-hero-overlay"></div>
+          <div class="container subpage-hero-content reveal">
+            <p class="eyebrow">Gallery</p>
+            <h1>Campus engagement, skilling sessions, and career-readiness moments.</h1>
+            <p class="subpage-hero-text">
+              A curated view of INSEED Solutions programs, learning environments, and institutional collaboration in action.
+            </p>
+          </div>
+        </section>
+
+        <section class="section gallery-section">
+          <div class="container">
+            <div class="section-heading center-heading reveal">
+              <p class="eyebrow">Image Library</p>
+              <h2>Published gallery images from training and partnership activities.</h2>
+              <p class="gallery-status" id="galleryStatus" role="status" aria-live="polite">Loading gallery images...</p>
+            </div>
+            <div class="gallery-grid" id="galleryGrid"></div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="site-footer" id="footer-contact">
+        <div class="container footer-grid">
+          <div class="footer-column">
+            <div class="footer-brand">
+              <div class="footer-brand-logo">
+                <img src="assets/branding/inseed-logo-footer.png" alt="INSEED Solutions logo" loading="lazy" decoding="async" />
+              </div>
+              <div class="footer-brand-text">
+                <strong>INSEED Solutions</strong>
+                <small>Enterprise Technology & Talent</small>
+              </div>
+            </div>
+            <p>
+              We deliver cutting-edge digital solutions, staffing support, and skilling services
+              that help organizations grow with confidence in a fast-changing digital landscape.
+            </p>
+          </div>
+          <div class="footer-column">
+            <h3>Services</h3>
+            <ul>
+              <li><a>Skill Development</a></li>
+              <li><a>Web App Development</a></li>
+              <li><a>Recruitment & RPO</a></li>
+              <li><a>IT & Non-IT Staffing</a></li>
+              <li><a>HR Consulting</a></li>
+            </ul>
+          </div>
+          <div class="footer-column">
+            <h3>Useful Links</h3>
+            <ul>
+              <li><a href="index.html">Home</a></li>
+              <li><a href="company-profile.html">Company Profile</a></li>
+              <li><a href="services.html">Services</a></li>
+              <li><a href="case-studies.html">Case Studies</a></li>
+              <li><a href="partnerships.html">Partnerships</a></li>
+              <li><a href="gallery.html">Gallery</a></li>
+            </ul>
+          </div>
+          <div class="footer-column">
+            <h3>Contact Info</h3>
+            <ul class="contact-list">
+              <li>Flat No. 204, House No. 2-5-360 Satyam Sivam Enclave, Hanamkonda. Telangana-506001</li>
+              <li><a href="tel:+919010210002">+91 90102 10002</a></li>
+              <li><a href="mailto:hello@inseedsolutions.com">hello@inseedsolutions.com</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <div class="container">
+            <p>&copy; 2026 INSEED Solutions Private Limited. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script src="shared-navbar.js"></script>
+    <script src="api-config.js"></script>
+    <script src="script.js"></script>
+    <script src="gallery-page.js"></script>
+  </body>
+</html>

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Data Intelligence | INSEED Solutions</title>
+    <meta
+      name="description"
+      content="Explore trainee, placement, and institution data through a modern analytics dashboard styled for the INSEED Solutions website."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    
+        <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/png" href="assets/images/favicon.png" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <div id="site-header-root"></div>
+
+      <main>
+        <section class="subpage-hero data-hero">
+          <div class="subpage-hero-media data-hero-media"></div>
+          <div class="subpage-hero-overlay"></div>
+          <div class="container subpage-hero-content reveal">
+            <p class="eyebrow">Skilling Data</p>
+            <h1>Program intelligence designed for visibility, outcomes, and confident decisions.</h1>
+            <p class="subpage-hero-text">
+              Explore trainee, placement, and institutional report views through a premium analytics workspace connected to live backend data.
+            </p>
+          </div>
+        </section>
+
+        <section class="section data-dashboard-section" data-public-reports data-api="/api/reports">
+          <div class="container">
+            <div class="data-stats-grid reveal">
+              <article class="data-stat-card">
+                <span>Total Records</span>
+                <strong id="dataStatTotal">0</strong>
+                <small>Rows in the selected report</small>
+              </article>
+              <article class="data-stat-card">
+                <span>Placed</span>
+                <strong id="dataStatPlaced">0</strong>
+                <small>Confirmed outcomes in view</small>
+              </article>
+              <article class="data-stat-card">
+                <span>Average Package</span>
+                <strong id="dataStatAverage">Rs 0</strong>
+                <small>Calculated from visible records</small>
+              </article>
+              <article class="data-stat-card">
+                <span id="dataStatLabelCaption">Top Label</span>
+                <strong id="dataStatLabel">-</strong>
+                <small>Leading segment in this report</small>
+              </article>
+            </div>
+
+            <div class="data-layout reveal">
+              <section class="dashboard-panel data-filter-panel">
+                <div class="panel-heading">
+                  <div>
+                    <p class="eyebrow">Report Builder</p>
+                    <h2>Generate report view</h2>
+                  </div>
+                </div>
+
+                <form class="data-filter-form" id="dataFilterForm">
+                  <div class="data-filter-grid">
+                    <label>
+                      <span>Report Type</span>
+                      <select id="dataTypeFilter" name="reportType" required>
+                        <option value="">Select report type</option>
+                        <option value="trainee">Trainee Details</option>
+                        <option value="placement">Placement Details</option>
+                        <option value="institution">Institution Summary</option>
+                      </select>
+                    </label>
+
+                    <label>
+                      <span>Course</span>
+                      <select id="dataCourseFilter" name="course">
+                        <option value="">All Courses</option>
+                      </select>
+                    </label>
+
+                    <label>
+                      <span>Qualification</span>
+                      <select id="dataQualificationFilter" name="qualification">
+                        <option value="">All Qualifications</option>
+                      </select>
+                    </label>
+
+                    <label>
+                      <span>Date of Joining</span>
+                      <input type="date" id="dataDateFilter" name="dateOfJoining" />
+                    </label>
+                  </div>
+                  <p class="form-status" id="dataFilterStatus" role="status" aria-live="polite"></p>
+
+                  <div class="data-filter-actions">
+                    <button class="button button-primary" type="submit">Generate Report</button>
+                  </div>
+                </form>
+
+                <p class="data-meta" id="dataMeta">Loading reports workspace...</p>
+              </section>
+
+              <aside class="data-insights-stack">
+                <article class="dashboard-panel data-chart-panel">
+                  <div class="panel-heading">
+                    <div>
+                      <p class="eyebrow">Status Distribution</p>
+                      <h2>Live pipeline mix</h2>
+                    </div>
+                  </div>
+                  <div class="donut-wrap data-donut-wrap">
+                    <div class="donut-chart" id="dataStatusDonut"></div>
+                    <div class="donut-legend" id="dataStatusLegend"></div>
+                  </div>
+                </article>
+
+                <article class="dashboard-panel data-chart-panel">
+                  <div class="panel-heading">
+                    <div>
+                      <p class="eyebrow">Distribution</p>
+                      <h2 id="dataDistributionHeading">Top Segments</h2>
+                    </div>
+                  </div>
+                  <div class="bar-chart data-bar-chart" id="dataDistributionChart"></div>
+                </article>
+              </aside>
+            </div>
+
+            <section class="dashboard-panel data-table-panel reveal">
+              <div class="panel-heading table-heading">
+                <div>
+                  <p class="eyebrow">Reports Table</p>
+                  <h2 id="dataTableHeading">Trainee Report</h2>
+                </div>
+                <div class="reports-export-actions data-export-actions">
+                  <button class="button button-secondary button-sm" type="button" id="dataExportExcelButton">Export Excel</button>
+                  <button class="button button-secondary button-sm" type="button" id="dataExportPdfButton">Export PDF</button>
+                </div>
+              </div>
+
+              <div class="table-shell data-table-shell">
+                <table class="placement-table data-table">
+                  <thead id="dataTableHead"></thead>
+                  <tbody id="dataTableBody"></tbody>
+                </table>
+              </div>
+
+              <div class="table-pagination data-pagination">
+                <span id="dataPaginationSummary">Showing 0-0 of 0 records</span>
+                <div class="data-pagination-actions" id="dataPaginationActions"></div>
+              </div>
+            </section>
+          </div>
+        </section>
+      </main>
+
+      <footer class="site-footer" id="footer-contact">
+        <div class="container footer-grid">
+          <div class="footer-column">
+                        <div class="footer-brand">
+              <div class="footer-brand-logo">
+                <img src="assets/branding/inseed-logo-footer.png" alt="INSEED Solutions logo" loading="lazy" decoding="async" />
+              </div>
+              <div class="footer-brand-text">
+                <strong>INSEED Solutions</strong>
+                <small>Enterprise Technology & Talent</small>
+              </div>
+            </div>
+            <p>
+              We deliver cutting-edge digital solutions, staffing support, and skilling services
+              that help organizations grow with confidence in a fast-changing digital landscape.
+            </p>
+          </div>
+          <div class="footer-column">
+            <h3>Services</h3>
+            <ul>
+              <li><a>Skill Development</a></li>
+              <li><a>Web App Development</a></li>
+              <li><a>Recruitment & RPO</a></li>
+              <li><a>IT & Non-IT Staffing</a></li>
+              <li><a>HR Consulting</a></li>
+            </ul>
+          </div>
+          <div class="footer-column">
+            <h3>Useful Links</h3>
+            <ul>
+              <li><a href="index.html">Home</a></li>
+              <li><a href="partnerships.html">Partnerships</a></li>
+              <li><a href="data.html">Data</a></li>
+              <li><a href="placement.html">Placement Dashboard</a></li>
+            </ul>
+          </div>
+          <div class="footer-column">
+            <h3>Contact Info</h3>
+            <ul class="contact-list">
+              <li>Flat No. 204, House No. 2-5-360
+                 Satyam Sivam Enclave, Hanamkonda.
+                 Telangana-506001</li>
+              <li><a href="tel:+919010210002">+91 90102 10002</a></li>
+              <li><a href="mailto:hello@inseedsolutions.com">hello@inseedsolutions.com</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <div class="container">
+            <p>&copy; 2026 INSEED Solutions Private Limited. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script src="shared-navbar.js"></script>
+    <script src="api-config.js"></script>
+    <script src="script.js"></script>
+    <script src="data-page.js"></script>
+  </body>
+</html>
+
+
+
+
+
+
+
