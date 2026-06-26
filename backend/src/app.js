@@ -4,7 +4,7 @@ const helmet = require("helmet");
 const path = require("path");
 const rateLimit = require("express-rate-limit");
 
-require("dotenv").config({ path: path.join(__dirname, "..", ".env"), override: true });
+require("dotenv").config({ path: path.join(__dirname, "..", ".env") });
 
 const apiRoutes = require("./routes");
 const errorHandler = require("./middleware/errorHandler");
