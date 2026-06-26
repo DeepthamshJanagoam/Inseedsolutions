@@ -3,9 +3,15 @@ const path = require("path");
 
 const multer = require("multer");
 
-const mouUploadDirectory = path.join(__dirname, "..", "..", "uploads", "mous");
-const traineeUploadDirectory = path.join(__dirname, "..", "..", "uploads", "trainee-documents");
-const galleryImageDirectory = path.join(__dirname, "..", "..", "..", "frontend", "images", "Gallery images");
+const runtimeUploadRoot = process.env.VERCEL
+  ? path.join("/tmp", "inseed-uploads")
+  : path.join(__dirname, "..", "..", "uploads");
+
+const mouUploadDirectory = path.join(runtimeUploadRoot, "mous");
+const traineeUploadDirectory = path.join(runtimeUploadRoot, "trainee-documents");
+const galleryImageDirectory = process.env.VERCEL
+  ? path.join(runtimeUploadRoot, "gallery-images")
+  : path.join(__dirname, "..", "..", "..", "frontend", "images", "Gallery images");
 fs.mkdirSync(mouUploadDirectory, { recursive: true });
 fs.mkdirSync(traineeUploadDirectory, { recursive: true });
 fs.mkdirSync(galleryImageDirectory, { recursive: true });
