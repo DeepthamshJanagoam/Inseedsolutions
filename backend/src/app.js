@@ -13,6 +13,8 @@ const requestLogger = require("./middleware/requestLogger");
 const { galleryImageDirectory } = require("./middleware/upload");
 
 const app = express();
+app.set("trust proxy", 1);
+
 const configuredOrigins = (process.env.FRONTEND_ORIGIN || "")
   .split(",")
   .map((origin) => origin.trim())
