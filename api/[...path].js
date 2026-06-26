@@ -1,1 +1,9 @@
-module.exports = require("../backend/src/app");
+const app = require("../backend/src/app");
+
+module.exports = (request, response) => {
+  if (!request.url.startsWith("/api")) {
+    request.url = `/api${request.url}`;
+  }
+
+  return app(request, response);
+};
