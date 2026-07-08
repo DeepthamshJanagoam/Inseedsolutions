@@ -476,6 +476,9 @@ if (traineeEnrollmentRoot) {
     body.set("phone", payload.phone);
     body.set("course", payload.course);
     body.set("profileData", JSON.stringify(payload.profileData));
+    if (isEditing) {
+      body.set("id", state.editingId);
+    }
 
     if (!isEditing) {
       body.set("password", payload.password || "");
@@ -752,10 +755,10 @@ if (traineeEnrollmentRoot) {
         if (submitButton) submitButton.disabled = true;
 
         const endpoint = isEditing
-          ? `${apiBase}${traineeEnrollmentRoot.dataset.studentsApi}/${state.editingId}`
+          ? `${apiBase}/api/admin/student-update`
           : `${apiBase}${traineeEnrollmentRoot.dataset.studentsApi}`;
         const response = await fetch(endpoint, {
-          method: isEditing ? "PUT" : "POST",
+          method: "POST",
           headers: getHeaders(false),
           body: buildStudentFormData(payload, isEditing),
         });
@@ -801,9 +804,13 @@ if (traineeEnrollmentRoot) {
       }
 
       try {
-        const response = await fetch(`${apiBase}${traineeEnrollmentRoot.dataset.studentsApi}/${traineeId}`, {
-          method: "DELETE",
-          headers: getHeaders(false),
+        const response = await fetch(`${apiBase}/api/admin/student-delete`, {
+          method: "POST",
+          headers: {
+            ...getHeaders(false),
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: new URLSearchParams({ id: traineeId }),
         });
 
         const result = await parseJsonResponse(response);

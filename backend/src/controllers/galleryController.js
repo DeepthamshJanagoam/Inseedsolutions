@@ -1,18 +1,4 @@
-const fs = require("fs/promises");
-
 const galleryService = require("../services/galleryService");
-
-const removeRequestFile = async (req) => {
-  if (!req.file?.path) return;
-
-  try {
-    await fs.unlink(req.file.path);
-  } catch (error) {
-    if (error.code !== "ENOENT") {
-      console.error(error);
-    }
-  }
-};
 
 const listGalleryImages = async (_req, res) => {
   const data = await galleryService.listGalleryImages();
@@ -24,18 +10,13 @@ const listGalleryImages = async (_req, res) => {
 };
 
 const uploadGalleryImage = async (req, res) => {
-  try {
-    const data = await galleryService.createGalleryImage(req.file, req.body);
+  const data = await galleryService.createGalleryImage(req.file, req.body);
 
-    res.status(201).json({
-      success: true,
-      message: "Gallery image uploaded successfully",
-      data,
-    });
-  } catch (error) {
-    await removeRequestFile(req);
-    throw error;
-  }
+  res.status(201).json({
+    success: true,
+    message: "Gallery image uploaded successfully",
+    data,
+  });
 };
 
 const updateGalleryImage = async (req, res) => {

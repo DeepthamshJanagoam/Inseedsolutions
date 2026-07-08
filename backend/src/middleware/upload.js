@@ -16,51 +16,12 @@ fs.mkdirSync(mouUploadDirectory, { recursive: true });
 fs.mkdirSync(traineeUploadDirectory, { recursive: true });
 fs.mkdirSync(galleryImageDirectory, { recursive: true });
 
-const sanitizeFileStem = (value) =>
-  String(value || "document")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .slice(0, 60) || "document";
-
-const mouDocumentStorage = multer.diskStorage({
-  destination: (_req, _file, callback) => {
-    callback(null, mouUploadDirectory);
-  },
-  filename: (req, file, callback) => {
-    const extension = path.extname(file.originalname || "").toLowerCase();
-    const baseName = sanitizeFileStem(req.body?.name || req.body?.shortCode || "mou");
-    callback(null, `${baseName}-${Date.now()}${extension}`);
-  },
-});
-
-const traineeDocumentStorage = multer.diskStorage({
-  destination: (_req, _file, callback) => {
-    callback(null, traineeUploadDirectory);
-  },
-  filename: (req, file, callback) => {
-    const extension = path.extname(file.originalname || "").toLowerCase();
-    const baseName = sanitizeFileStem(req.body?.candidateCode || req.body?.fullName || "trainee");
-    const fieldName = sanitizeFileStem(file.fieldname || "document");
-    callback(null, `${baseName}-${fieldName}-${Date.now()}${extension}`);
-  },
-});
-
-const galleryImageStorage = multer.diskStorage({
-  destination: (_req, _file, callback) => {
-    callback(null, galleryImageDirectory);
-  },
-  filename: (req, file, callback) => {
-    const extension = path.extname(file.originalname || "").toLowerCase();
-    const baseName = sanitizeFileStem(req.body?.title || path.basename(file.originalname || "gallery-image", extension));
-    callback(null, `${baseName}-${Date.now()}${extension}`);
-  },
-});
+const memoryFileStorage = multer.memoryStorage();
 
 const allowedMouMimeTypes = new Set(["application/pdf"]);
 
 const mouDocumentUpload = multer({
-  storage: mouDocumentStorage,
+  storage: memoryFileStorage,
   limits: {
     fileSize: 10 * 1024 * 1024,
   },
@@ -79,7 +40,7 @@ const mouDocumentUpload = multer({
 });
 
 const traineeDocumentUpload = multer({
-  storage: traineeDocumentStorage,
+  storage: memoryFileStorage,
   limits: {
     fileSize: 5 * 1024 * 1024,
   },
@@ -105,7 +66,7 @@ const traineeDocumentUpload = multer({
 const allowedGalleryMimeTypes = new Set(["image/jpeg", "image/png", "image/webp"]);
 
 const galleryImageUpload = multer({
-  storage: galleryImageStorage,
+  storage: memoryFileStorage,
   limits: {
     fileSize: 8 * 1024 * 1024,
   },

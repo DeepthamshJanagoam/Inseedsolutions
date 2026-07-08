@@ -130,3 +130,17 @@ model ContactSubmission {
   @@index([email])
   @@index([createdAt])
 }
+
+model GalleryImage {
+  id        String   @id @default(cuid())
+  filename  String   @unique
+  title     String
+  caption   String?
+  mimeType  String
+  size      Int
+  dataUrl   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([createdAt])
+}

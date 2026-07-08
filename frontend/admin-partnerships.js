@@ -75,7 +75,11 @@ if (adminPartnershipsRoot) {
     if (!card) return;
 
     const absoluteUrl = resolveMouDocumentUrl(agreement?.mouUrl);
-    const fileName = absoluteUrl ? absoluteUrl.split("/").pop() : "";
+    const fileName = absoluteUrl
+      ? absoluteUrl.startsWith("data:application/pdf")
+        ? `${agreement?.name || "MOU"} PDF`
+        : absoluteUrl.split("/").pop()
+      : "";
 
     if (!agreement || !absoluteUrl) {
       card.innerHTML = `

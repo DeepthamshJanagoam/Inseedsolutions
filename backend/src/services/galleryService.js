@@ -1,13 +1,10 @@
-const fs = require("fs/promises");
 const path = require("path");
 
+const prisma = require("../prisma/client");
 const ApiError = require("../utils/apiError");
-const { galleryImageDirectory } = require("../middleware/upload");
+const { buildStoredFilename, fileToDataUrl } = require("../utils/fileStorage");
 
-const metadataPath = path.join(galleryImageDirectory, "gallery-metadata.json");
 const allowedExtensions = new Set([".jpg", ".jpeg", ".png", ".webp"]);
-
-const toPublicUrl = (filename) => `/gallery-images/${encodeURIComponent(filename)}`;
 
 const sanitizeFilename = (filename) => {
   const normalized = path.basename(String(filename || ""));
@@ -20,19 +17,6 @@ const sanitizeFilename = (filename) => {
   return normalized;
 };
 
-const readMetadata = async () => {
-  try {
-    return JSON.parse(await fs.readFile(metadataPath, "utf8"));
-  } catch (error) {
-    if (error.code === "ENOENT") return {};
-    throw error;
-  }
-};
-
-const writeMetadata = async (metadata) => {
-  await fs.writeFile(metadataPath, JSON.stringify(metadata, null, 2));
-};
-
 const titleFromFilename = (filename) =>
   path
     .basename(filename, path.extname(filename))
@@ -40,82 +24,70 @@ const titleFromFilename = (filename) =>
     .replace(/\s+/g, " ")
     .trim();
 
+const normalizeGalleryImage = (image) => ({
+  filename: image.filename,
+  title: image.title,
+  caption: image.caption || "",
+  url: image.dataUrl,
+  size: image.size,
+  updatedAt: image.updatedAt.toISOString(),
+});
+
 const listGalleryImages = async () => {
-  const [entries, metadata] = await Promise.all([fs.readdir(galleryImageDirectory, { withFileTypes: true }), readMetadata()]);
+  const images = await prisma.galleryImage.findMany({
+    orderBy: { updatedAt: "desc" },
+  });
 
-  const images = await Promise.all(
-    entries
-      .filter((entry) => entry.isFile() && allowedExtensions.has(path.extname(entry.name).toLowerCase()))
-      .map(async (entry) => {
-        const stats = await fs.stat(path.join(galleryImageDirectory, entry.name));
-        const itemMetadata = metadata[entry.name] || {};
-
-        return {
-          filename: entry.name,
-          title: itemMetadata.title || titleFromFilename(entry.name),
-          caption: itemMetadata.caption || "",
-          url: toPublicUrl(entry.name),
-          size: stats.size,
-          updatedAt: stats.mtime.toISOString(),
-        };
-      })
-  );
-
-  return images.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+  return images.map(normalizeGalleryImage);
 };
 
 const createGalleryImage = async (file, { title, caption } = {}) => {
-  if (!file?.filename) {
+  if (!file?.buffer) {
     throw new ApiError(400, "Gallery image is required");
   }
 
-  const metadata = await readMetadata();
-  metadata[file.filename] = {
-    title: String(title || "").trim() || titleFromFilename(file.filename),
-    caption: String(caption || "").trim(),
-  };
-  await writeMetadata(metadata);
+  const filename = buildStoredFilename(file, title || path.basename(file.originalname || "gallery-image", path.extname(file.originalname || "")));
+  const image = await prisma.galleryImage.create({
+    data: {
+      filename,
+      title: String(title || "").trim() || titleFromFilename(filename),
+      caption: String(caption || "").trim(),
+      mimeType: file.mimetype || "application/octet-stream",
+      size: file.size || file.buffer.length,
+      dataUrl: fileToDataUrl(file),
+    },
+  });
 
-  return (await listGalleryImages()).find((image) => image.filename === file.filename);
+  return normalizeGalleryImage(image);
 };
 
 const updateGalleryImage = async (filename, { title, caption } = {}) => {
   const safeFilename = sanitizeFilename(filename);
-  const absolutePath = path.join(galleryImageDirectory, safeFilename);
 
-  try {
-    await fs.access(absolutePath);
-  } catch (error) {
+  const existing = await prisma.galleryImage.findUnique({ where: { filename: safeFilename } });
+  if (!existing) {
     throw new ApiError(404, "Gallery image not found");
   }
 
-  const metadata = await readMetadata();
-  metadata[safeFilename] = {
-    title: String(title || "").trim() || titleFromFilename(safeFilename),
-    caption: String(caption || "").trim(),
-  };
-  await writeMetadata(metadata);
+  const image = await prisma.galleryImage.update({
+    where: { filename: safeFilename },
+    data: {
+      title: String(title || "").trim() || titleFromFilename(safeFilename),
+      caption: String(caption || "").trim(),
+    },
+  });
 
-  return (await listGalleryImages()).find((image) => image.filename === safeFilename);
+  return normalizeGalleryImage(image);
 };
 
 const deleteGalleryImage = async (filename) => {
   const safeFilename = sanitizeFilename(filename);
-  const absolutePath = path.join(galleryImageDirectory, safeFilename);
-
-  try {
-    await fs.unlink(absolutePath);
-  } catch (error) {
-    if (error.code === "ENOENT") {
-      throw new ApiError(404, "Gallery image not found");
-    }
-    throw error;
+  const existing = await prisma.galleryImage.findUnique({ where: { filename: safeFilename } });
+  if (!existing) {
+    throw new ApiError(404, "Gallery image not found");
   }
 
-  const metadata = await readMetadata();
-  delete metadata[safeFilename];
-  await writeMetadata(metadata);
-
+  await prisma.galleryImage.delete({ where: { filename: safeFilename } });
   return { deleted: true };
 };
 

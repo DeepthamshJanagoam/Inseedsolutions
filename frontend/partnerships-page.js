@@ -26,7 +26,10 @@ if (partnershipsPageRoot) {
   const getMouDocumentValue = (agreement) =>
     agreement?.mouUrl || agreement?.mouDocumentUrl || agreement?.mouFilePath || agreement?.mouDocumentPath || "";
 
-  const isPdfDocumentValue = (value) => /\.pdf(?:[?#].*)?$/i.test(String(value || "").trim());
+  const isPdfDocumentValue = (value) => {
+    const normalized = String(value || "").trim();
+    return /^data:application\/pdf;base64,/i.test(normalized) || /\.pdf(?:[?#].*)?$/i.test(normalized);
+  };
 
   const ensureMouModal = () => {
     if (modalElements) return modalElements;

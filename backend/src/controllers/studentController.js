@@ -1,4 +1,5 @@
 const studentService = require("../services/studentService");
+const { buildStoredFilename, fileToDataUrl } = require("../utils/fileStorage");
 const { validateStudentPayload } = require("../utils/validators");
 
 const TRAINEE_DOCUMENT_LABELS = {
@@ -23,10 +24,10 @@ const parseProfileData = (value) => {
 const serializeUploadedFile = (file, label) => ({
   label,
   originalName: file.originalname,
-  fileName: file.filename,
+  fileName: buildStoredFilename(file, file.fieldname || label),
   mimeType: file.mimetype,
   size: file.size,
-  url: `/uploads/trainee-documents/${file.filename}`,
+  url: fileToDataUrl(file),
   uploadedAt: new Date().toISOString(),
 });
 

@@ -1,19 +1,6 @@
-const fs = require("fs/promises");
-
 const partnershipService = require("../services/partnershipService");
+const { fileToDataUrl } = require("../utils/fileStorage");
 const { validatePartnershipPayload } = require("../utils/validators");
-
-const removeRequestFile = async (req) => {
-  if (!req.file?.path) return;
-
-  try {
-    await fs.unlink(req.file.path);
-  } catch (error) {
-    if (error.code !== "ENOENT") {
-      console.error(error);
-    }
-  }
-};
 
 const withUploadedDocument = (req, payload) => {
   if (!req.file) {
@@ -28,7 +15,7 @@ const withUploadedDocument = (req, payload) => {
 
   return {
     ...payload,
-    mouUrl: `/uploads/mous/${req.file.filename}`,
+    mouUrl: fileToDataUrl(req.file),
   };
 };
 
@@ -51,15 +38,8 @@ const listAdminPartnerships = async (req, res) => {
 };
 
 const createPartnership = async (req, res) => {
-  let data;
-
-  try {
-    const payload = withUploadedDocument(req, validatePartnershipPayload(req.body));
-    data = await partnershipService.createPartnershipAgreement(payload);
-  } catch (error) {
-    await removeRequestFile(req);
-    throw error;
-  }
+  const payload = withUploadedDocument(req, validatePartnershipPayload(req.body));
+  const data = await partnershipService.createPartnershipAgreement(payload);
 
   res.status(201).json({
     success: true,
@@ -69,15 +49,8 @@ const createPartnership = async (req, res) => {
 };
 
 const updatePartnership = async (req, res) => {
-  let data;
-
-  try {
-    const payload = withUploadedDocument(req, validatePartnershipPayload(req.body));
-    data = await partnershipService.updatePartnershipAgreement(req.params.id, payload);
-  } catch (error) {
-    await removeRequestFile(req);
-    throw error;
-  }
+  const payload = withUploadedDocument(req, validatePartnershipPayload(req.body));
+  const data = await partnershipService.updatePartnershipAgreement(req.params.id, payload);
 
   res.status(200).json({
     success: true,

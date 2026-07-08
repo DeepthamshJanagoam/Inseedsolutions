@@ -29,6 +29,25 @@ router
   .put(requireRole("ADMIN"), asyncHandler(galleryController.updateGalleryImage))
   .delete(requireRole("ADMIN"), asyncHandler(galleryController.deleteGalleryImage));
 
+router.post(
+  "/gallery-update",
+  requireRole("ADMIN"),
+  (req, res, next) => {
+    req.params.filename = req.body.filename;
+    next();
+  },
+  asyncHandler(galleryController.updateGalleryImage)
+);
+router.post(
+  "/gallery-delete",
+  requireRole("ADMIN"),
+  (req, res, next) => {
+    req.params.filename = req.body.filename;
+    next();
+  },
+  asyncHandler(galleryController.deleteGalleryImage)
+);
+
 router
   .route("/institutions")
   .get(requireRole("ADMIN", "PLACEMENT_OPERATOR"), asyncHandler(institutionController.listInstitutions))
@@ -68,6 +87,32 @@ router
     asyncHandler(studentController.updateStudent)
   )
   .delete(requireRole("ADMIN", "TRAINEE_OPERATOR"), asyncHandler(studentController.deleteStudent));
+
+router.post(
+  "/student-update",
+  requireRole("ADMIN", "TRAINEE_OPERATOR"),
+  traineeDocumentUpload.fields([
+    { name: "qualificationCertificate", maxCount: 1 },
+    { name: "profilePhoto", maxCount: 1 },
+    { name: "aadharCard", maxCount: 1 },
+    { name: "panCard", maxCount: 1 },
+    { name: "bankPassbook", maxCount: 1 },
+  ]),
+  (req, res, next) => {
+    req.params.id = req.body.id;
+    next();
+  },
+  asyncHandler(studentController.updateStudent)
+);
+router.post(
+  "/student-delete",
+  requireRole("ADMIN", "TRAINEE_OPERATOR"),
+  (req, res, next) => {
+    req.params.id = req.body.id;
+    next();
+  },
+  asyncHandler(studentController.deleteStudent)
+);
 
 router
   .route("/placements")

@@ -7,6 +7,7 @@ const ALLOWED_ADMIN_ROLES = ["ADMIN", "TRAINEE_OPERATOR", "PLACEMENT_OPERATOR"];
 const isEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value || "").trim());
 const isUrl = (value) => /^https?:\/\/.+/i.test(String(value || "").trim());
 const isLocalUploadPdfPath = (value) => /^\/uploads\/[\w./-]+\.pdf(?:[?#].*)?$/i.test(String(value || "").trim());
+const isPdfDataUrl = (value) => /^data:application\/pdf;base64,/i.test(String(value || "").trim());
 
 const requiredString = (value, field, min = 1) => {
   const normalized = String(value || "").trim();
@@ -216,8 +217,8 @@ const validatePartnershipPayload = (body) => {
       ? body.isActive
       : String(body.isActive ?? "true").toLowerCase() !== "false";
 
-  if (mouUrl && !isUrl(mouUrl) && !isLocalUploadPdfPath(mouUrl)) {
-    throw new ApiError(400, "MOU URL must be a valid absolute URL or local uploaded PDF path");
+  if (mouUrl && !isUrl(mouUrl) && !isLocalUploadPdfPath(mouUrl) && !isPdfDataUrl(mouUrl)) {
+    throw new ApiError(400, "MOU URL must be a valid absolute URL, local uploaded PDF path, or stored PDF file");
   }
 
   if (!Number.isFinite(sortOrder)) {

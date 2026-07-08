@@ -176,9 +176,13 @@ if (adminGalleryRoot) {
         if (deleteButton) {
           if (!window.confirm("Delete this gallery image?")) return;
 
-          const response = await fetch(`${apiBase}${adminGalleryRoot.dataset.galleryApi}/${encodeURIComponent(filename)}`, {
-            method: "DELETE",
-            headers: getHeaders(),
+          const response = await fetch(`${apiBase}/api/admin/gallery-delete`, {
+            method: "POST",
+            headers: {
+              ...getHeaders(),
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: new URLSearchParams({ filename }),
           });
           const result = await parseJsonResponse(response);
           if (!response.ok) throw new Error(result.message || "Unable to delete gallery image");
@@ -191,13 +195,13 @@ if (adminGalleryRoot) {
           title: card?.querySelector("[data-gallery-title]")?.value || "",
           caption: card?.querySelector("[data-gallery-caption]")?.value || "",
         };
-        const response = await fetch(`${apiBase}${adminGalleryRoot.dataset.galleryApi}/${encodeURIComponent(filename)}`, {
-          method: "PUT",
+        const response = await fetch(`${apiBase}/api/admin/gallery-update`, {
+          method: "POST",
           headers: {
             ...getHeaders(),
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(payload),
+          body: JSON.stringify({ filename, ...payload }),
         });
         const result = await parseJsonResponse(response);
         if (!response.ok) throw new Error(result.message || "Unable to update gallery image");
