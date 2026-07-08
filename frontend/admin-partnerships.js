@@ -18,7 +18,17 @@ if (adminPartnershipsRoot) {
 
   const parseJsonResponse = async (response) => {
     const raw = await response.text();
-    return raw ? JSON.parse(raw) : {};
+    if (!raw) return {};
+
+    try {
+      return JSON.parse(raw);
+    } catch (error) {
+      const snippet = raw.replace(/\s+/g, " ").trim().slice(0, 140);
+      return {
+        success: false,
+        message: `Server returned ${response.status} ${response.statusText || "response"} instead of JSON.${snippet ? ` ${snippet}` : ""}`,
+      };
+    }
   };
 
   const getHeaders = (includeJson = true) => {
@@ -223,11 +233,12 @@ if (adminPartnershipsRoot) {
       if (submitButton) submitButton.disabled = true;
 
       try {
+        const encodedId = encodeURIComponent(state.editingId);
         const endpoint = isEditing
-          ? `${apiBase}${adminPartnershipsRoot.dataset.partnershipsApi}/${state.editingId}`
+          ? `${apiBase}${adminPartnershipsRoot.dataset.partnershipsApi}/${encodedId}/update`
           : `${apiBase}${adminPartnershipsRoot.dataset.partnershipsApi}`;
         const response = await fetch(endpoint, {
-          method: isEditing ? "PUT" : "POST",
+          method: "POST",
           headers: getHeaders(false),
           body: multipartData,
         });
@@ -269,8 +280,8 @@ if (adminPartnershipsRoot) {
       }
 
       try {
-        const response = await fetch(`${apiBase}${adminPartnershipsRoot.dataset.partnershipsApi}/${id}`, {
-          method: "DELETE",
+        const response = await fetch(`${apiBase}${adminPartnershipsRoot.dataset.partnershipsApi}/${encodeURIComponent(id)}/delete`, {
+          method: "POST",
           headers: getHeaders(),
         });
 

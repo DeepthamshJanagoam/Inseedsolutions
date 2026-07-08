@@ -89,6 +89,14 @@ router
   .put(requireRole("ADMIN"), mouDocumentUpload.single("mouDocument"), asyncHandler(partnershipController.updatePartnership))
   .delete(requireRole("ADMIN"), asyncHandler(partnershipController.deletePartnership));
 
+router.post(
+  "/partnerships/:id/update",
+  requireRole("ADMIN"),
+  mouDocumentUpload.single("mouDocument"),
+  asyncHandler(partnershipController.updatePartnership)
+);
+router.post("/partnerships/:id/delete", requireRole("ADMIN"), asyncHandler(partnershipController.deletePartnership));
+
 router
   .route("/users")
   .get(requireRole("ADMIN"), asyncHandler(adminUserController.listAdminUsers))
