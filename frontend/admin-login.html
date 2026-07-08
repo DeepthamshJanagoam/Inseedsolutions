@@ -20,26 +20,39 @@
     <div class="page-shell">
       <div id="site-header-root"></div>
 
-      <main>
-        <section class="contact-hero">
-          <div class="container contact-hero-grid contact-hero-grid-single reveal">
-            <div>
+      <main class="admin-login-main">
+        <section class="admin-login-hero" aria-labelledby="adminLoginTitle">
+          <div class="admin-login-orb admin-login-orb-one"></div>
+          <div class="admin-login-orb admin-login-orb-two"></div>
+          <div class="admin-login-network" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <div class="container admin-login-hero-grid">
+            <div class="admin-login-copy reveal">
               <p class="eyebrow">Admin Access</p>
-              <h1>Manage Operational Workflows Through a Secure Admin Login</h1>
+              <h1 id="adminLoginTitle">Manage Operational Workflows Through a Secure Admin Login</h1>
               <p>Access placement records, inquiries, skilling data, and internal workflows from the secure admin console.</p>
             </div>
-          </div>
-        </section>
-
-        <section class="section contact-section">
-          <div class="container contact-layout contact-layout-single">
             <form
-              class="contact-form admin-login-form reveal"
+              class="contact-form admin-login-form admin-login-card reveal"
               data-login-form
               data-api="/api/admin/login"
               data-redirect="admin-dashboard.html"
               autocomplete="off"
             >
+              <div class="admin-login-card-glow" aria-hidden="true"></div>
+              <div class="admin-login-lock-mark" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false">
+                  <path d="M17 9V7A5 5 0 0 0 7 7v2H5v12h14V9h-2Zm-8 0V7a3 3 0 0 1 6 0v2H9Zm4 7.73V18h-2v-1.27a2 2 0 1 1 2 0Z" />
+                </svg>
+              </div>
+              <div class="admin-login-shield" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false">
+                  <path d="M12 2 20 5.6v6.1c0 5-3.3 8.8-8 10.3-4.7-1.5-8-5.3-8-10.3V5.6L12 2Zm3.9 7.6-4.8 4.8-2-2-1.4 1.4 3.4 3.4 6.2-6.2-1.4-1.4Z" />
+                </svg>
+              </div>
               <div class="form-heading">
                 <p class="eyebrow">Secure Login</p>
                 <h2>Login</h2>
@@ -47,11 +60,21 @@
               </div>
               <label>
                 <span>Email Address</span>
-                <input name="email" type="email" placeholder="Enter email address" autocomplete="off" required />
+                <span class="admin-input-wrap">
+                  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path d="M4 6h16v12H4V6Zm8 6.5L6.7 8H5.9l6.1 5.2L18.1 8h-.8L12 12.5Z" />
+                  </svg>
+                  <input name="email" type="email" placeholder="Enter email address" autocomplete="off" required />
+                </span>
               </label>
               <label>
                 <span>Password</span>
-                <input name="password" type="password" placeholder="Enter password" autocomplete="new-password" required />
+                <span class="admin-input-wrap">
+                  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path d="M17 9V7A5 5 0 0 0 7 7v2H5v12h14V9h-2ZM9 9V7a3 3 0 0 1 6 0v2H9Zm4 7.7V18h-2v-1.3a2 2 0 1 1 2 0Z" />
+                  </svg>
+                  <input name="password" type="password" placeholder="Enter password" autocomplete="new-password" required />
+                </span>
               </label>
               <button class="button button-primary contact-submit" type="submit">Login</button>
               <p class="form-status" id="loginFormStatus" role="status" aria-live="polite"></p>
