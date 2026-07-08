@@ -284,8 +284,8 @@ if (adminPartnershipsRoot) {
       try {
         const response = await fetch(`${apiBase}/api/admin/partnership-delete`, {
           method: "POST",
-          headers: getHeaders(),
-          body: JSON.stringify({ id }),
+          headers: getHeaders(false),
+          body: new URLSearchParams({ id }),
         });
 
         const result = await parseJsonResponse(response);
