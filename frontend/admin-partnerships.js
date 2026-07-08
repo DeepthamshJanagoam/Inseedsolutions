@@ -217,6 +217,9 @@ if (adminPartnershipsRoot) {
       multipartData.set("summary", formData.get("summary") || "");
       multipartData.set("sortOrder", formData.get("sortOrder") || "0");
       multipartData.set("isActive", formData.get("isActive") === "true" ? "true" : "false");
+      if (isEditing) {
+        multipartData.set("id", state.editingId);
+      }
 
       const mouDocument = document.getElementById("mouDocumentInput")?.files?.[0];
       if (mouDocument) {
@@ -233,9 +236,8 @@ if (adminPartnershipsRoot) {
       if (submitButton) submitButton.disabled = true;
 
       try {
-        const encodedId = encodeURIComponent(state.editingId);
         const endpoint = isEditing
-          ? `${apiBase}${adminPartnershipsRoot.dataset.partnershipsApi}/${encodedId}/update`
+          ? `${apiBase}/api/admin/partnership-update`
           : `${apiBase}${adminPartnershipsRoot.dataset.partnershipsApi}`;
         const response = await fetch(endpoint, {
           method: "POST",
@@ -280,9 +282,10 @@ if (adminPartnershipsRoot) {
       }
 
       try {
-        const response = await fetch(`${apiBase}${adminPartnershipsRoot.dataset.partnershipsApi}/${encodeURIComponent(id)}/delete`, {
+        const response = await fetch(`${apiBase}/api/admin/partnership-delete`, {
           method: "POST",
           headers: getHeaders(),
+          body: JSON.stringify({ id }),
         });
 
         const result = await parseJsonResponse(response);

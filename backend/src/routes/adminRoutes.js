@@ -96,6 +96,25 @@ router.post(
   asyncHandler(partnershipController.updatePartnership)
 );
 router.post("/partnerships/:id/delete", requireRole("ADMIN"), asyncHandler(partnershipController.deletePartnership));
+router.post(
+  "/partnership-update",
+  requireRole("ADMIN"),
+  mouDocumentUpload.single("mouDocument"),
+  (req, res, next) => {
+    req.params.id = req.body.id;
+    next();
+  },
+  asyncHandler(partnershipController.updatePartnership)
+);
+router.post(
+  "/partnership-delete",
+  requireRole("ADMIN"),
+  (req, res, next) => {
+    req.params.id = req.body.id;
+    next();
+  },
+  asyncHandler(partnershipController.deletePartnership)
+);
 
 router
   .route("/users")
