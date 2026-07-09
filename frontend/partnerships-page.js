@@ -4,6 +4,8 @@ if (partnershipsPageRoot) {
   const apiBase = window.APP_API_BASE || "";
   const grid = document.getElementById("partnerAgreementsGrid");
   let modalElements = null;
+  let activeMouObjectUrl = "";
+  let loadedAgreements = [];
 
   const escapeHtml = (value) =>
     String(value ?? "")
@@ -29,6 +31,39 @@ if (partnershipsPageRoot) {
   const isPdfDocumentValue = (value) => {
     const normalized = String(value || "").trim();
     return /^data:application\/pdf;base64,/i.test(normalized) || /\.pdf(?:[?#].*)?$/i.test(normalized);
+  };
+
+  const dataUrlToObjectUrl = (dataUrl) => {
+    const [meta, base64Payload] = String(dataUrl || "").split(",");
+    const mimeMatch = /^data:([^;]+);base64$/i.exec(meta || "");
+
+    if (!mimeMatch || !base64Payload) {
+      return "";
+    }
+
+    const binary = atob(base64Payload);
+    const bytes = new Uint8Array(binary.length);
+    for (let index = 0; index < binary.length; index += 1) {
+      bytes[index] = binary.charCodeAt(index);
+    }
+
+    return URL.createObjectURL(new Blob([bytes], { type: mimeMatch[1] }));
+  };
+
+  const getDisplayDocumentUrl = (value) => {
+    const absoluteUrl = resolveDocumentHref(value);
+    if (!absoluteUrl) return "";
+
+    if (/^data:application\/pdf;base64,/i.test(absoluteUrl)) {
+      if (activeMouObjectUrl) {
+        URL.revokeObjectURL(activeMouObjectUrl);
+      }
+
+      activeMouObjectUrl = dataUrlToObjectUrl(absoluteUrl);
+      return activeMouObjectUrl;
+    }
+
+    return absoluteUrl;
   };
 
   const ensureMouModal = () => {
@@ -74,8 +109,8 @@ if (partnershipsPageRoot) {
     return modalElements;
   };
 
-  const openMouModal = (url) => {
-    const absoluteUrl = resolveDocumentHref(url);
+  const openMouModal = (documentValue) => {
+    const absoluteUrl = getDisplayDocumentUrl(documentValue);
     if (!absoluteUrl) return;
 
     const { modal, frame, openLink, closeButton } = ensureMouModal();
@@ -92,18 +127,24 @@ if (partnershipsPageRoot) {
     modalElements.modal.setAttribute("hidden", "");
     modalElements.frame.removeAttribute("src");
     modalElements.openLink.removeAttribute("href");
+    if (activeMouObjectUrl) {
+      URL.revokeObjectURL(activeMouObjectUrl);
+      activeMouObjectUrl = "";
+    }
     document.body.classList.remove("mou-modal-open");
   };
 
   const renderAgreements = (agreements) => {
     if (!grid || !agreements.length) return;
 
+    loadedAgreements = agreements;
+
     grid.innerHTML = agreements
       .map((agreement) => {
         const tags = Array.isArray(agreement.tags) ? agreement.tags : [];
         const bullets = Array.isArray(agreement.bullets) ? agreement.bullets : [];
         const mouDocumentValue = getMouDocumentValue(agreement);
-        const ctaHref = isPdfDocumentValue(mouDocumentValue) ? resolveDocumentHref(mouDocumentValue) : "";
+        const ctaHref = isPdfDocumentValue(mouDocumentValue) ? mouDocumentValue : "";
         const ctaLabel = agreement.mouLabel || "View MOU";
         const hasDocument = Boolean(ctaHref);
 
@@ -120,7 +161,7 @@ if (partnershipsPageRoot) {
             <div class="partner-card-actions">
               ${
                 hasDocument
-                  ? `<button class="button button-secondary partner-button" type="button" data-mou-url="${escapeHtml(ctaHref)}">${escapeHtml(ctaLabel)}</button>`
+                  ? `<button class="button button-secondary partner-button" type="button" data-mou-id="${escapeHtml(agreement.id)}">${escapeHtml(ctaLabel)}</button>`
                   : `<span class="partner-mou-empty">No MOU uploaded yet.</span>`
               }
             </div>
@@ -131,10 +172,11 @@ if (partnershipsPageRoot) {
   };
 
   grid?.addEventListener("click", (event) => {
-    const button = event.target.closest("[data-mou-url]");
+    const button = event.target.closest("[data-mou-id]");
     if (!button) return;
 
-    openMouModal(button.getAttribute("data-mou-url"));
+    const agreement = loadedAgreements.find((item) => String(item.id) === button.getAttribute("data-mou-id"));
+    openMouModal(getMouDocumentValue(agreement));
   });
 
   const loadAgreements = async () => {
