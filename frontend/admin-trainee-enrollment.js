@@ -181,6 +181,27 @@ if (traineeEnrollmentRoot) {
     if (nextButton) nextButton.disabled = state.page >= totalPages;
   };
 
+  const setAnimatedFieldVisibility = (field, isVisible) => {
+    if (!field) return;
+
+    window.clearTimeout(Number(field.dataset.hideTimer || 0));
+
+    if (isVisible) {
+      field.hidden = false;
+      field.setAttribute("aria-hidden", "false");
+      window.requestAnimationFrame(() => field.classList.add("is-visible"));
+      return;
+    }
+
+    field.classList.remove("is-visible");
+    field.setAttribute("aria-hidden", "true");
+    field.dataset.hideTimer = window.setTimeout(() => {
+      if (!field.classList.contains("is-visible")) {
+        field.hidden = true;
+      }
+    }, 240);
+  };
+
   const toggleConditionalFields = () => {
     const disabilityToggle = document.getElementById("traineeDisabilityToggle");
     const disabilityTypeField = document.getElementById("traineeDisabilityTypeField");
@@ -190,7 +211,7 @@ if (traineeEnrollmentRoot) {
     const ojtInput = ojtCompletionField?.querySelector("input");
 
     const hasDisability = toBoolean(disabilityToggle?.value);
-    if (disabilityTypeField) disabilityTypeField.hidden = !hasDisability;
+    setAnimatedFieldVisibility(disabilityTypeField, hasDisability);
     if (disabilityInput) {
       disabilityInput.required = hasDisability;
       if (!hasDisability) disabilityInput.value = "";
@@ -431,7 +452,6 @@ if (traineeEnrollmentRoot) {
         religion: String(formData.get("religion") || "").trim(),
         category: String(formData.get("category") || "").trim(),
         disability,
-        disabilityType: disability ? String(formData.get("disabilityType") || "").trim() : "",
       },
       bank: {
         accountNumber: String(formData.get("bankAccountNumber") || "").trim(),
@@ -455,6 +475,10 @@ if (traineeEnrollmentRoot) {
       salary: [],
       documents: { ...state.existingDocuments },
     };
+
+    if (disability) {
+      structuredData.education.disabilityType = String(formData.get("disabilityType") || "").trim();
+    }
 
     return {
       candidateCode: candidateId,

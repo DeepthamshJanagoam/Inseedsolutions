@@ -3843,6 +3843,20 @@ button {
   resize: vertical;
 }
 
+.trainee-conditional-field {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: max-height 0.24s ease, opacity 0.2s ease, transform 0.24s ease;
+}
+
+.trainee-conditional-field.is-visible {
+  max-height: 130px;
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .trainee-upload-field {
   display: grid;
   gap: 8px;
