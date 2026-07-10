@@ -3550,6 +3550,26 @@ button {
   border-radius: 30px;
 }
 
+.admin-edit-focus {
+  border-color: rgba(0, 198, 184, 0.44) !important;
+  box-shadow: 0 0 0 4px rgba(0, 198, 184, 0.13), 0 28px 72px rgba(14, 141, 184, 0.2) !important;
+  animation: adminEditFocusPulse 1.4s ease 2;
+}
+
+@keyframes adminEditFocusPulse {
+  0% {
+    transform: translateY(0);
+  }
+
+  35% {
+    transform: translateY(-3px);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}
+
 .admin-intro-text {
   margin: 0 0 24px;
   color: var(--text-soft);

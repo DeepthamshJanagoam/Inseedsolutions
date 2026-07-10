@@ -204,10 +204,35 @@
     }
   };
 
+  const focusEditTarget = (target, { focusSelector = "input:not([type='hidden']), select, textarea, button" } = {}) => {
+    const element = typeof target === "string" ? document.querySelector(target) : target;
+    if (!element) return;
+
+    document.querySelectorAll(".admin-edit-focus").forEach((item) => {
+      if (item !== element) item.classList.remove("admin-edit-focus");
+    });
+
+    element.classList.remove("admin-edit-focus");
+    void element.offsetWidth;
+    element.classList.add("admin-edit-focus");
+    element.scrollIntoView({ behavior: "smooth", block: "center" });
+
+    const focusTarget = focusSelector ? element.querySelector(focusSelector) : null;
+    if (focusTarget) {
+      window.setTimeout(() => focusTarget.focus({ preventScroll: true }), 450);
+    }
+  };
+
+  const clearEditFocus = () => {
+    document.querySelectorAll(".admin-edit-focus").forEach((item) => item.classList.remove("admin-edit-focus"));
+  };
+
   window.AdminAuth = {
     applyShell,
     canAccess,
     clearSession,
+    clearEditFocus,
+    focusEditTarget,
     getStoredUser,
     logout,
     requirePage,

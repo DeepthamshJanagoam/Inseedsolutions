@@ -195,6 +195,8 @@ if (adminGalleryRoot) {
           title: card?.querySelector("[data-gallery-title]")?.value || "",
           caption: card?.querySelector("[data-gallery-caption]")?.value || "",
         };
+        window.AdminAuth?.focusEditTarget?.(card, { focusSelector: "[data-gallery-title]" });
+        setStatus(`Editing ${payload.title || filename}. Saving gallery details...`);
         const response = await fetch(`${apiBase}/api/admin/gallery-update`, {
           method: "POST",
           headers: {

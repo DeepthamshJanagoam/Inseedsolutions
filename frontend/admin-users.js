@@ -40,6 +40,7 @@ if (adminUsersRoot) {
     const resetForm = () => {
       const form = document.getElementById("adminUsersForm");
       form?.reset();
+      window.AdminAuth?.clearEditFocus?.();
       document.getElementById("adminUserEditId").value = "";
       state.editingId = "";
       document.getElementById("adminUsersCancelButton").hidden = true;
@@ -115,6 +116,7 @@ if (adminUsersRoot) {
         passwordInput.value = "";
       }
       document.getElementById("adminUsersFormStatus").textContent = `Editing ${user.name}`;
+      window.AdminAuth?.focusEditTarget?.(document.querySelector(".trainee-form-panel"));
     };
 
     document.getElementById("adminUsersLogoutButton")?.addEventListener("click", window.AdminAuth.logout);

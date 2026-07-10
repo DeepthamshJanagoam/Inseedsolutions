@@ -151,6 +151,7 @@ if (adminPartnershipsRoot) {
 
   const resetForm = () => {
     document.getElementById("partnershipAgreementForm")?.reset();
+    window.AdminAuth?.clearEditFocus?.();
     document.getElementById("partnershipAgreementId").value = "";
     state.editingId = "";
     setText("partnershipFormHeading", "Create a new partnership agreement");
@@ -199,7 +200,7 @@ if (adminPartnershipsRoot) {
     const submitButton = document.getElementById("partnershipSubmitButton");
     if (submitButton) submitButton.textContent = "Update Agreement";
     renderDocumentCard(agreement);
-    form.scrollIntoView({ behavior: "smooth", block: "start" });
+    window.AdminAuth?.focusEditTarget?.(document.querySelector(".trainee-form-panel"));
   };
 
   const bindForm = () => {

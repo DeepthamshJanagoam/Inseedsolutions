@@ -494,6 +494,7 @@ if (traineeEnrollmentRoot) {
   const resetForm = () => {
     const form = document.getElementById("traineeEnrollmentForm");
     form?.reset();
+    window.AdminAuth?.clearEditFocus?.();
     const editField = document.getElementById("traineeEditId");
     if (editField) editField.value = "";
     state.editingId = "";
@@ -626,8 +627,10 @@ if (traineeEnrollmentRoot) {
     renderFormMode();
     toggleConditionalFields();
     setInsightCard(trainee);
+    const heading = document.getElementById("traineeFormHeading");
+    if (heading) heading.textContent = `Edit ${trainee.fullName}`;
     setText("traineeFormStatus", `Editing ${trainee.fullName}`);
-    form.scrollIntoView({ behavior: "smooth", block: "start" });
+    window.AdminAuth?.focusEditTarget?.(document.querySelector(".trainee-form-panel"));
   };
 
   const bindFilters = () => {

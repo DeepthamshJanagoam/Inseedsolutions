@@ -494,6 +494,7 @@ if (placementManagementRoot) {
   const resetPlacementForm = () => {
     const form = document.getElementById("placementManagementForm");
     form?.reset();
+    window.AdminAuth?.clearEditFocus?.();
     const editField = document.getElementById("placementEditId");
     if (editField) editField.value = "";
     state.editingId = "";
@@ -572,8 +573,11 @@ if (placementManagementRoot) {
     renderSelectedTrainee(form.candidateId.value);
     togglePlacementConditionalFields();
     renderFormMode();
-    setText("placementFormStatus", `Editing ${placement.student?.fullName || placement.companyName || "placement record"}`);
-    form.scrollIntoView({ behavior: "smooth", block: "start" });
+    const recordName = placement.student?.fullName || placement.companyName || "placement record";
+    const heading = document.querySelector(".placement-form-panel .panel-heading h2");
+    if (heading) heading.textContent = `Edit ${recordName}`;
+    setText("placementFormStatus", `Editing ${recordName}`);
+    window.AdminAuth?.focusEditTarget?.(document.querySelector(".placement-form-panel"));
   };
 
   const bindFilters = () => {
