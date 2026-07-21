@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 
-require("dotenv").config({ path: path.join(__dirname, "..", ".env"), override: true });
+require("dotenv").config({ path: path.join(__dirname, "..", ".env") });
 
 const bcrypt = require("bcrypt");
 const XLSX = require("xlsx");
@@ -430,23 +430,24 @@ const insertRows = async (rows) => {
   };
 
   let created = 0;
+  const batchSize = Number(process.env.TRAINEE_IMPORT_BATCH_SIZE || 100);
 
-  await prisma.$transaction(
-    async (tx) => {
-      for (const row of rows) {
-        const passwordHash = await getPasswordHash(row.data.password);
-        const { password, ...studentData } = row.data;
-        await tx.student.create({
-          data: {
-            ...studentData,
-            passwordHash,
-          },
-        });
-        created += 1;
-      }
-    },
-    { timeout: 120000 }
-  );
+  for (let index = 0; index < rows.length; index += batchSize) {
+    const batch = rows.slice(index, index + batchSize);
+    const data = [];
+
+    for (const row of batch) {
+      const passwordHash = await getPasswordHash(row.data.password);
+      const { password, ...studentData } = row.data;
+      data.push({
+        ...studentData,
+        passwordHash,
+      });
+    }
+
+    const result = await prisma.student.createMany({ data });
+    created += result.count;
+  }
 
   return created;
 };
