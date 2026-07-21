@@ -210,8 +210,29 @@
                   <h2 id="reportsTableHeading">Trainee Report</h2>
                 </div>
                 <div class="reports-export-actions">
-                  <button class="button button-secondary button-sm" type="button" id="exportExcelButton">Export Excel</button>
-                  <button class="button button-secondary button-sm" type="button" id="exportPdfButton">Export PDF</button>
+                  <div class="reports-download-menu" id="reportsDownloadMenu">
+                    <button
+                      class="button button-primary button-sm reports-download-trigger"
+                      type="button"
+                      id="reportsDownloadButton"
+                      aria-haspopup="menu"
+                      aria-expanded="false"
+                      aria-controls="reportsDownloadOptions"
+                    >
+                      Download Report
+                      <span aria-hidden="true">⌄</span>
+                    </button>
+                    <div class="reports-download-options" id="reportsDownloadOptions" role="menu" aria-label="Download report options" hidden>
+                      <button type="button" role="menuitem" data-report-download="pdf">
+                        <span class="reports-download-icon">PDF</span>
+                        Download as PDF
+                      </button>
+                      <button type="button" role="menuitem" data-report-download="xlsx">
+                        <span class="reports-download-icon">XLS</span>
+                        Download as Excel
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -230,6 +251,7 @@
           </div>
         </section>
       </main>
+      <div class="admin-report-toast" id="reportsDownloadToast" role="status" aria-live="polite"></div>
     </div>
 
     <script src="api-config.js"></script>
@@ -238,6 +260,5 @@
     <script src="admin-reports.js"></script>
   </body>
 </html>
-
 
 

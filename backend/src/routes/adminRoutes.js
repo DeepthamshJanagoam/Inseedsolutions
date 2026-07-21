@@ -17,6 +17,7 @@ const router = express.Router();
 router.use(authenticate, requireRole("ADMIN", "TRAINEE_OPERATOR", "PLACEMENT_OPERATOR"));
 
 router.get("/overview", asyncHandler(adminController.getAdminOverview));
+router.get("/reports/export", requireRole("ADMIN"), asyncHandler(reportController.exportAdminReport));
 router.get("/reports", requireRole("ADMIN"), asyncHandler(reportController.getAdminReports));
 
 router

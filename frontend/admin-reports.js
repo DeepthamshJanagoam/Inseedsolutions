@@ -46,8 +46,10 @@ if (adminReportsRoot) {
       tableBody: document.getElementById("reportsTableBody"),
       paginationSummary: document.getElementById("reportsPaginationSummary"),
       paginationActions: document.getElementById("reportsPaginationActions"),
-      exportExcelButton: document.getElementById("exportExcelButton"),
-      exportPdfButton: document.getElementById("exportPdfButton"),
+      downloadMenu: document.getElementById("reportsDownloadMenu"),
+      downloadButton: document.getElementById("reportsDownloadButton"),
+      downloadOptions: document.getElementById("reportsDownloadOptions"),
+      downloadToast: document.getElementById("reportsDownloadToast"),
     };
 
     const chartPalette = ["#20c997", "#6c8cff", "#f3c969", "#ff8e72", "#8a7cf7", "#64c4e7"];
@@ -134,6 +136,92 @@ if (adminReportsRoot) {
         if (value) params.set(key, value);
       });
       return params.toString();
+    };
+
+    const showToast = (message, stateName = "success") => {
+      if (!elements.downloadToast) return;
+      elements.downloadToast.textContent = message;
+      elements.downloadToast.dataset.state = stateName;
+      elements.downloadToast.classList.add("is-visible");
+      window.clearTimeout(Number(elements.downloadToast.dataset.hideTimer || 0));
+      elements.downloadToast.dataset.hideTimer = window.setTimeout(() => {
+        elements.downloadToast.classList.remove("is-visible");
+      }, 3200);
+    };
+
+    const setDownloadMenuOpen = (isOpen) => {
+      if (!elements.downloadButton || !elements.downloadOptions) return;
+      elements.downloadButton.setAttribute("aria-expanded", String(isOpen));
+      elements.downloadOptions.hidden = !isOpen;
+      elements.downloadMenu?.classList.toggle("is-open", isOpen);
+
+      if (isOpen) {
+        elements.downloadOptions.querySelector("[role='menuitem']")?.focus();
+      } else {
+        elements.downloadButton.focus();
+      }
+    };
+
+    const closeDownloadMenu = () => {
+      if (elements.downloadButton?.getAttribute("aria-expanded") === "true") {
+        setDownloadMenuOpen(false);
+      }
+    };
+
+    const saveBlob = (blob, fallbackFilename) => {
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = fallbackFilename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    };
+
+    const getFilenameFromDisposition = (value, fallback) => {
+      const match = String(value || "").match(/filename="?([^"]+)"?/i);
+      return match?.[1] || fallback;
+    };
+
+    const downloadReport = async ({ reportType, format, filters }) => {
+      const option = elements.downloadOptions?.querySelector(`[data-report-download="${format}"]`);
+      const allOptions = Array.from(elements.downloadOptions?.querySelectorAll("[data-report-download]") || []);
+      const originalHtml = option?.innerHTML || "";
+      const label = format === "pdf" ? "PDF" : "Excel";
+
+      try {
+        allOptions.forEach((button) => {
+          button.disabled = true;
+        });
+        if (option) option.textContent = `Preparing ${label}...`;
+
+        const params = new URLSearchParams(buildQuery({ ...filters, reportType }));
+        params.set("format", format);
+        const response = await fetch(`${apiBase}/api/admin/reports/export?${params.toString()}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          const message = await response.text();
+          throw new Error(message || "Unable to generate the report.");
+        }
+
+        const blob = await response.blob();
+        const fallback = `INSEED_${formatLabel(reportType)}_Report.${format === "pdf" ? "pdf" : "xlsx"}`.replace(/\s+/g, "_");
+        saveBlob(blob, getFilenameFromDisposition(response.headers.get("Content-Disposition"), fallback));
+        showToast("Report downloaded successfully.");
+      } catch (error) {
+        showToast("Unable to generate the report. Please try again.", "error");
+      } finally {
+        if (option) option.innerHTML = originalHtml;
+        allOptions.forEach((button) => {
+          button.disabled = false;
+        });
+        closeDownloadMenu();
+      }
     };
 
     const populateSelect = (select, values, fallbackLabel, selectedValue) => {
@@ -356,76 +444,6 @@ if (adminReportsRoot) {
       });
     };
 
-    const exportCsv = () => {
-      const { columns, rows } = state.table;
-      if (!rows.length) return;
-
-      const csvRows = [
-        columns.map((column) => `"${String(column.label).replaceAll('"', '""')}"`).join(","),
-        ...rows.map((row) =>
-          columns
-            .map((column) => `"${String(formatCellValue(column, row)).replaceAll('"', '""')}"`)
-            .join(",")
-        ),
-      ];
-
-      const blob = new Blob([csvRows.join("\n")], { type: "text/csv;charset=utf-8;" });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = `${state.reportType}-report.csv`;
-      link.click();
-      URL.revokeObjectURL(url);
-    };
-
-    const exportPdf = () => {
-      const { columns, rows } = state.table;
-      const win = window.open("", "_blank", "width=1400,height=900");
-      if (!win) return;
-
-      win.document.write(`
-        <html>
-          <head>
-            <title>${formatLabel(state.reportType)} Report</title>
-            <style>
-              @page { size: A4 landscape; margin: 12mm; }
-              body { font-family: Arial, sans-serif; padding: 24px; color: #111827; }
-              h1 { margin-bottom: 8px; }
-              p { color: #4b5563; margin-bottom: 24px; }
-              table { width: 100%; border-collapse: collapse; font-size: 11px; }
-              th, td { border: 1px solid #d1d5db; padding: 8px; text-align: left; vertical-align: top; }
-              th { background: #eef2ff; }
-            </style>
-          </head>
-          <body>
-            <h1>${formatLabel(state.reportType)} Report</h1>
-            <p>Generated from INSEED Admin on ${new Date().toLocaleString("en-IN")}</p>
-            <table>
-              <thead>
-                <tr>${columns.map((column) => `<th>${escapeHtml(column.label)}</th>`).join("")}</tr>
-              </thead>
-              <tbody>
-                ${rows
-                  .map(
-                    (row) => `
-                      <tr>
-                        ${columns
-                          .map((column) => `<td>${escapeHtml(formatCellValue(column, row))}</td>`)
-                          .join("")}
-                      </tr>
-                    `
-                  )
-                  .join("")}
-              </tbody>
-            </table>
-          </body>
-        </html>
-      `);
-      win.document.close();
-      win.focus();
-      win.print();
-    };
-
     const getReportHeading = (reportType) => {
       if (reportType === "placement") return "Placement Report";
       if (reportType === "institution") return "Institution Report";
@@ -496,8 +514,39 @@ if (adminReportsRoot) {
         if (elements.filterStatus) elements.filterStatus.textContent = "";
         loadReports(getFilters());
       });
-      elements.exportExcelButton?.addEventListener("click", exportCsv);
-      elements.exportPdfButton?.addEventListener("click", exportPdf);
+      elements.downloadButton?.addEventListener("click", () => {
+        const isOpen = elements.downloadButton.getAttribute("aria-expanded") === "true";
+        setDownloadMenuOpen(!isOpen);
+      });
+      elements.downloadOptions?.addEventListener("click", (event) => {
+        const option = event.target.closest("[data-report-download]");
+        if (!option) return;
+        downloadReport({
+          reportType: state.reportType,
+          format: option.dataset.reportDownload,
+          filters: state.currentFilters,
+        });
+      });
+      elements.downloadOptions?.addEventListener("keydown", (event) => {
+        const options = Array.from(elements.downloadOptions.querySelectorAll("[role='menuitem']"));
+        const currentIndex = options.indexOf(document.activeElement);
+
+        if (event.key === "Escape") {
+          event.preventDefault();
+          closeDownloadMenu();
+        } else if (event.key === "ArrowDown") {
+          event.preventDefault();
+          options[(currentIndex + 1) % options.length]?.focus();
+        } else if (event.key === "ArrowUp") {
+          event.preventDefault();
+          options[(currentIndex - 1 + options.length) % options.length]?.focus();
+        }
+      });
+      document.addEventListener("click", (event) => {
+        if (!elements.downloadMenu?.contains(event.target)) {
+          closeDownloadMenu();
+        }
+      });
     };
 
     bindEvents();

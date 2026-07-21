@@ -7,7 +7,7 @@ const errorHandler = (error, req, res, next) => {
       error?.message || ""
     );
 
-  const statusCode = error instanceof ApiError ? error.statusCode : isUploadValidationError ? 400 : 500;
+  const statusCode = error instanceof ApiError ? error.statusCode : error.statusCode || (isUploadValidationError ? 400 : 500);
   const message =
     statusCode === 500
       ? "We could not complete that request right now. Please try again after the server is configured."
