@@ -448,9 +448,10 @@
                 <label>
                   <span>Rows per page</span>
                   <select id="traineePageSize">
-                    <option value="8">8 rows</option>
-                    <option value="12">12 rows</option>
-                    <option value="20">20 rows</option>
+                    <option value="10">10 rows</option>
+                    <option value="25">25 rows</option>
+                    <option value="50">50 rows</option>
+                    <option value="100">100 rows</option>
                   </select>
                 </label>
               </div>
@@ -471,11 +472,7 @@
                 </table>
               </div>
 
-              <div class="table-pagination">
-                <button class="button button-secondary button-sm" type="button" id="traineePrevPage">Previous</button>
-                <span id="traineePaginationMeta">Page 1 of 1</span>
-                <button class="button button-secondary button-sm" type="button" id="traineeNextPage">Next</button>
-              </div>
+              <div class="table-pagination" id="traineePagination"></div>
             </section>
           </div>
         </section>
@@ -485,6 +482,7 @@
     <script src="api-config.js"></script>
     <script src="script.js"></script>
     <script src="admin-auth.js"></script>
+    <script src="admin-pagination.js"></script>
     <script src="admin-trainee-enrollment.js"></script>
   </body>
 </html>

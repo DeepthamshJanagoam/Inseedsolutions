@@ -11,11 +11,22 @@ if (traineeEnrollmentRoot) {
       query: "",
       course: "all",
       page: 1,
-      pageSize: 8,
+      pageSize: 10,
+      totalRecords: 0,
+      totalPages: 1,
+      metrics: {
+        totalTrainees: 0,
+        activeCourses: 0,
+        reachableRecords: 0,
+        placementReady: 0,
+      },
+      courseOptions: [],
+      isLoading: false,
       editingId: "",
       documentFiles: {},
       existingDocuments: {},
     };
+    let searchTimer = 0;
 
   const TRAINEE_DOCUMENTS = {
     qualificationCertificate: {
@@ -120,65 +131,91 @@ if (traineeEnrollmentRoot) {
     return "";
   };
 
-  const getFilteredTrainees = () => {
-    const query = state.query.trim().toLowerCase();
-
-    return state.trainees.filter((trainee) => {
-      const profileData = getProfileData(trainee);
-      const searchable = [
-        trainee.candidateCode,
-        trainee.fullName,
-        trainee.email,
-        trainee.phone,
-        trainee.course,
-        profileData?.basicInfo?.fatherName,
-        profileData?.basicInfo?.motherName,
-      ]
-        .filter(Boolean)
-        .join(" ")
-        .toLowerCase();
-
-      const matchesQuery = !query || searchable.includes(query);
-      const matchesCourse = state.course === "all" || trainee.course === state.course;
-      return matchesQuery && matchesCourse;
-    });
-  };
-
   const hydrateCourseFilter = () => {
     const filter = document.getElementById("traineeCourseFilter");
     if (!filter) return;
 
-    const courses = [...new Set(state.trainees.map((item) => item.course).filter(Boolean))].sort((a, b) =>
-      a.localeCompare(b)
-    );
+    const currentValue = state.course;
+    const courses = [...new Set(state.courseOptions.filter(Boolean))].sort((a, b) => a.localeCompare(b));
 
     filter.innerHTML =
       '<option value="all">All courses</option>' +
       courses.map((course) => `<option value="${escapeHtml(course)}">${escapeHtml(course)}</option>`).join("");
+    filter.value = courses.includes(currentValue) ? currentValue : "all";
+    state.course = filter.value;
   };
 
   const renderMetrics = () => {
-    const total = state.trainees.length;
-    const courses = new Set(state.trainees.map((item) => item.course).filter(Boolean)).size;
-    const reachable = state.trainees.filter((item) => item.email && item.phone).length;
-    const placementReady = state.trainees.filter((item) => Array.isArray(item.placements) && item.placements.length > 0).length;
-
-    setText("traineeMetricTotal", total);
-    setText("traineeMetricCourses", courses);
-    setText("traineeMetricReachable", reachable);
-    setText("traineeMetricPlacementReady", placementReady);
+    setText("traineeMetricTotal", state.metrics.totalTrainees);
+    setText("traineeMetricCourses", state.metrics.activeCourses);
+    setText("traineeMetricReachable", state.metrics.reachableRecords);
+    setText("traineeMetricPlacementReady", state.metrics.placementReady);
   };
 
-  const renderPagination = (totalItems) => {
-    const totalPages = Math.max(1, Math.ceil(totalItems / state.pageSize));
-    if (state.page > totalPages) state.page = totalPages;
+  const updateUrlState = () => {
+    const url = new URL(window.location.href);
+    const params = url.searchParams;
+    params.set("page", String(state.page));
+    params.set("limit", String(state.pageSize));
 
-    setText("traineePaginationMeta", `Page ${state.page} of ${totalPages}`);
-    const prevButton = document.getElementById("traineePrevPage");
-    const nextButton = document.getElementById("traineeNextPage");
+    if (state.query.trim()) {
+      params.set("search", state.query.trim());
+    } else {
+      params.delete("search");
+    }
 
-    if (prevButton) prevButton.disabled = state.page <= 1;
-    if (nextButton) nextButton.disabled = state.page >= totalPages;
+    if (state.course !== "all") {
+      params.set("course", state.course);
+    } else {
+      params.delete("course");
+    }
+
+    window.history.replaceState({}, "", `${url.pathname}?${params.toString()}`);
+  };
+
+  const hydrateStateFromUrl = () => {
+    const params = new URLSearchParams(window.location.search);
+    const page = Number(params.get("page"));
+    const limit = Number(params.get("limit"));
+    state.page = Number.isFinite(page) && page > 0 ? page : 1;
+    state.pageSize = [10, 25, 50, 100].includes(limit) ? limit : 10;
+    state.query = params.get("search") || "";
+    state.course = params.get("course") || "all";
+
+    const searchInput = document.getElementById("traineeSearch");
+    const pageSizeSelect = document.getElementById("traineePageSize");
+    if (searchInput) searchInput.value = state.query;
+    if (pageSizeSelect) pageSizeSelect.value = String(state.pageSize);
+  };
+
+  const renderPagination = () => {
+    window.AdminPagination?.render({
+      container: document.getElementById("traineePagination"),
+      currentPage: state.page,
+      totalPages: state.totalPages,
+      totalRecords: state.totalRecords,
+      pageSize: state.pageSize,
+      isLoading: state.isLoading,
+      onPageChange: async (page) => {
+        state.page = page;
+        await loadTrainees();
+      },
+    });
+  };
+
+  const renderLoadingRows = () => {
+    const body = document.getElementById("traineeTableBody");
+    if (!body) return;
+
+    body.innerHTML = Array.from({ length: Math.min(state.pageSize, 10) })
+      .map(
+        () => `
+          <tr class="table-skeleton-row">
+            <td colspan="6"><span class="table-skeleton-line"></span></td>
+          </tr>
+        `
+      )
+      .join("");
   };
 
   const setAnimatedFieldVisibility = (field, isVisible) => {
@@ -535,16 +572,11 @@ if (traineeEnrollmentRoot) {
     const body = document.getElementById("traineeTableBody");
     if (!body) return;
 
-    const filtered = getFilteredTrainees();
-    const totalPages = Math.max(1, Math.ceil(filtered.length / state.pageSize));
-    if (state.page > totalPages) state.page = totalPages;
+    const pageRows = state.trainees;
 
-    const startIndex = (state.page - 1) * state.pageSize;
-    const pageRows = filtered.slice(startIndex, startIndex + state.pageSize);
-
-    setText("traineeTableCount", `${filtered.length} record${filtered.length === 1 ? "" : "s"}`);
+    setText("traineeTableCount", `${state.totalRecords} record${state.totalRecords === 1 ? "" : "s"}`);
     renderMetrics();
-    renderPagination(filtered.length);
+    renderPagination();
 
     if (!pageRows.length) {
       body.innerHTML = `
@@ -586,20 +618,47 @@ if (traineeEnrollmentRoot) {
 
   const loadTrainees = async () => {
     setText("traineeModuleMeta", user.email);
+    state.isLoading = true;
+    renderLoadingRows();
+    renderPagination();
 
-    const response = await fetch(`${apiBase}${traineeEnrollmentRoot.dataset.studentsApi}`, {
-      headers: getHeaders(false),
+    const params = new URLSearchParams({
+      page: String(state.page),
+      limit: String(state.pageSize),
     });
+    if (state.query.trim()) params.set("search", state.query.trim());
+    if (state.course !== "all") params.set("course", state.course);
 
-    const result = await parseJsonResponse(response);
+    try {
+      const response = await fetch(`${apiBase}${traineeEnrollmentRoot.dataset.studentsApi}?${params.toString()}`, {
+        headers: getHeaders(false),
+      });
 
-    if (!response.ok) {
-      throw new Error(result.message || "Unable to load trainee data");
+      const result = await parseJsonResponse(response);
+
+      if (!response.ok) {
+        throw new Error(result.message || "Unable to load trainee data");
+      }
+
+      const pagination = result.pagination || {};
+      state.trainees = result.data || [];
+      state.totalRecords = Number(pagination.totalRecords) || 0;
+      state.totalPages = Math.max(1, Number(pagination.totalPages) || 1);
+      state.page = Math.min(Math.max(1, Number(pagination.currentPage) || state.page), state.totalPages);
+      state.pageSize = Number(pagination.limit) || state.pageSize;
+      state.metrics = {
+        ...state.metrics,
+        ...(result.metrics || {}),
+      };
+      state.courseOptions = result.filters?.courses || state.courseOptions;
+
+      hydrateCourseFilter();
+      updateUrlState();
+      renderTable();
+    } finally {
+      state.isLoading = false;
+      renderPagination();
     }
-
-    state.trainees = result.data || [];
-    hydrateCourseFilter();
-    renderTable();
   };
 
   const fillForm = (trainee) => {
@@ -661,34 +720,20 @@ if (traineeEnrollmentRoot) {
     document.getElementById("traineeSearch")?.addEventListener("input", (event) => {
       state.query = event.target.value;
       state.page = 1;
-      renderTable();
+      window.clearTimeout(searchTimer);
+      searchTimer = window.setTimeout(loadTrainees, 250);
     });
 
-    document.getElementById("traineeCourseFilter")?.addEventListener("change", (event) => {
+    document.getElementById("traineeCourseFilter")?.addEventListener("change", async (event) => {
       state.course = event.target.value;
       state.page = 1;
-      renderTable();
+      await loadTrainees();
     });
 
-    document.getElementById("traineePageSize")?.addEventListener("change", (event) => {
-      state.pageSize = Number(event.target.value) || 8;
+    document.getElementById("traineePageSize")?.addEventListener("change", async (event) => {
+      state.pageSize = Number(event.target.value) || 10;
       state.page = 1;
-      renderTable();
-    });
-
-    document.getElementById("traineePrevPage")?.addEventListener("click", () => {
-      if (state.page > 1) {
-        state.page -= 1;
-        renderTable();
-      }
-    });
-
-    document.getElementById("traineeNextPage")?.addEventListener("click", () => {
-      const totalPages = Math.max(1, Math.ceil(getFilteredTrainees().length / state.pageSize));
-      if (state.page < totalPages) {
-        state.page += 1;
-        renderTable();
-      }
+      await loadTrainees();
     });
   };
 
@@ -890,6 +935,7 @@ if (traineeEnrollmentRoot) {
   };
 
     const init = async () => {
+      hydrateStateFromUrl();
       bindLogout();
       bindFilters();
       bindConditionalFields();

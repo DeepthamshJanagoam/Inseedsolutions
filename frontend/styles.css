@@ -4147,11 +4147,100 @@ button {
   justify-content: space-between;
   gap: 14px;
   margin-top: 20px;
+  flex-wrap: wrap;
 }
 
 .table-pagination span {
   color: var(--text-soft);
   font-weight: 700;
+}
+
+.pagination-summary {
+  color: var(--text-soft);
+  font-weight: 800;
+}
+
+.pagination-actions,
+.pagination-pages {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.pagination-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  min-height: 38px;
+  padding: 0 14px;
+  border: 1px solid rgba(20, 77, 135, 0.16);
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--navy);
+  font: inherit;
+  font-size: 0.86rem;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 12px 28px rgba(11, 35, 69, 0.08);
+  transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease, color 180ms ease, opacity 180ms ease;
+}
+
+.pagination-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  border-color: rgba(0, 198, 184, 0.45);
+  box-shadow: 0 16px 34px rgba(0, 150, 160, 0.16);
+}
+
+.pagination-button.is-active {
+  border-color: transparent;
+  background: linear-gradient(135deg, #16c6b8, #0e8db8);
+  color: #ffffff;
+  box-shadow: 0 16px 34px rgba(14, 141, 184, 0.28);
+}
+
+.pagination-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+  transform: none;
+  box-shadow: none;
+}
+
+.pagination-ellipsis,
+.pagination-mobile-meta {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  color: var(--text-soft);
+  font-weight: 900;
+}
+
+.pagination-mobile-meta {
+  display: none;
+}
+
+.table-skeleton-row td {
+  padding: 18px 20px;
+}
+
+.table-skeleton-line {
+  display: block;
+  width: 100%;
+  height: 18px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(226, 232, 240, 0.72), rgba(248, 250, 252, 0.95), rgba(226, 232, 240, 0.72));
+  background-size: 220% 100%;
+  animation: tableSkeletonPulse 1.1s ease-in-out infinite;
+}
+
+@keyframes tableSkeletonPulse {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
 }
 
 .table-action-row {
@@ -4875,6 +4964,24 @@ button {
   .table-pagination {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .pagination-summary {
+    text-align: center;
+  }
+
+  .pagination-actions {
+    justify-content: center;
+  }
+
+  .pagination-pages,
+  .pagination-boundary,
+  .pagination-ellipsis {
+    display: none;
+  }
+
+  .pagination-mobile-meta {
+    display: inline-flex;
   }
 
   .executive-header {

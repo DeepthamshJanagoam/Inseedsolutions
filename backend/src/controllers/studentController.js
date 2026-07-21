@@ -51,11 +51,21 @@ const attachUploadedDocuments = (body, files = {}) => {
 };
 
 const listStudents = async (req, res) => {
-  const data = await studentService.listStudents();
+  const usesPagination = req.query.page !== undefined || req.query.limit !== undefined;
+  const data = usesPagination
+    ? await studentService.listStudentsPaginated(req.query)
+    : await studentService.listStudents();
 
   res.status(200).json({
     success: true,
-    data,
+    data: usesPagination ? data.records : data,
+    ...(usesPagination
+      ? {
+          pagination: data.pagination,
+          filters: data.filters,
+          metrics: data.metrics,
+        }
+      : {}),
   });
 };
 
