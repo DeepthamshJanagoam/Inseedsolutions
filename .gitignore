@@ -9,6 +9,9 @@ backend-server*.log
 frontend-server*.log
 
 backend/uploads/
+backend/data/
+backend/backups/
+backend/import-reports/
 .vercel/
 .DS_Store
 
