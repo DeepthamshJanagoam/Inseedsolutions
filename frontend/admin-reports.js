@@ -16,6 +16,7 @@ if (adminReportsRoot) {
       },
       currentFilters: {},
       reportType: "trainee",
+      hasGeneratedReport: false,
     };
 
     const elements = {
@@ -271,6 +272,40 @@ if (adminReportsRoot) {
       }
     };
 
+    const setDownloadEnabled = (isEnabled) => {
+      if (elements.downloadButton) {
+        elements.downloadButton.disabled = !isEnabled;
+        elements.downloadButton.setAttribute(
+          "title",
+          isEnabled ? "Download the generated report" : "Generate a report before downloading"
+        );
+      }
+      if (!isEnabled) closeDownloadMenu();
+    };
+
+    const renderInitialReportState = () => {
+      state.hasGeneratedReport = false;
+      state.table = { columns: [], rows: [] };
+      state.currentFilters = {};
+      state.currentPage = 1;
+      elements.meta.textContent = "Choose filters and click Generate Report.";
+      elements.tableHeading.textContent = "Generated Report";
+      elements.tableHead.innerHTML = "";
+      elements.tableBody.innerHTML = `
+        <tr>
+          <td class="reports-table-empty">Select a report type and click Generate Report to view data.</td>
+        </tr>
+      `;
+      elements.paginationSummary.textContent = "No report generated";
+      elements.paginationActions.innerHTML = "";
+      elements.chartPanels.forEach((panel) => {
+        if (panel.body) {
+          panel.body.innerHTML = `<p class="reports-empty-text">Charts appear after a report is generated.</p>`;
+        }
+      });
+      setDownloadEnabled(false);
+    };
+
     const renderSummary = (summary, exportMeta, reportType) => {
       const cards = summary.cards || [];
       elements.summaryCards.forEach((card, index) => {
@@ -464,12 +499,40 @@ if (adminReportsRoot) {
       state.reportType = reportType;
       state.table = table;
       state.currentPage = 1;
+      state.hasGeneratedReport = true;
 
       renderOptions(options, state.currentFilters);
       renderSummary(summary, exportMeta, reportType);
       renderCharts(charts);
       elements.tableHeading.textContent = getReportHeading(reportType);
       renderTable();
+      setDownloadEnabled(Boolean(table.rows.length));
+    };
+
+    const loadReportOptions = async () => {
+      try {
+        const response = await fetch(`${apiBase}/api/admin/reports/options`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const raw = await response.text();
+        const result = raw ? JSON.parse(raw) : {};
+
+        if (!response.ok) {
+          throw new Error(result.message || "Unable to load report filters");
+        }
+
+        renderOptions(result.data || {}, getFilters());
+        renderInitialReportState();
+      } catch (error) {
+        if (/401|403|token|permission|expired/i.test(error.message)) {
+          window.AdminAuth.logout();
+          return;
+        }
+        elements.meta.textContent = error.message || "Unable to load report filters.";
+        renderInitialReportState();
+      }
     };
 
     const loadReports = async (filters = getFilters()) => {
@@ -529,6 +592,11 @@ if (adminReportsRoot) {
       elements.downloadOptions?.addEventListener("click", (event) => {
         const option = event.target.closest("[data-report-download]");
         if (!option) return;
+        if (!state.hasGeneratedReport) {
+          showToast("Generate a report before downloading.", "error");
+          closeDownloadMenu();
+          return;
+        }
         downloadReport({
           reportType: state.reportType,
           format: option.dataset.reportDownload,
@@ -558,6 +626,6 @@ if (adminReportsRoot) {
     };
 
     bindEvents();
-    loadReports();
+    loadReportOptions();
   }
 }

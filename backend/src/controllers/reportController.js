@@ -10,6 +10,15 @@ const getAdminReports = async (req, res) => {
   });
 };
 
+const getAdminReportOptions = async (req, res) => {
+  const data = await reportService.getReportOptions();
+
+  res.status(200).json({
+    success: true,
+    data,
+  });
+};
+
 const getPublicReports = async (req, res) => {
   const data = await reportService.getAdminReports(req.query);
 
@@ -30,6 +39,7 @@ const exportAdminReport = async (req, res) => {
 
 module.exports = {
   exportAdminReport,
+  getAdminReportOptions,
   getAdminReports,
   getPublicReports,
 };

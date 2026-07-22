@@ -702,6 +702,45 @@ const buildTable = (reportType, traineeRows, placementRows, institutionRows, ski
   };
 };
 
+const getReportOptions = async () => {
+  const students = await prisma.student.findMany({
+    select: {
+      course: true,
+      profileData: true,
+      placements: {
+        select: {
+          companyName: true,
+          institution: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  const placementRows = students.flatMap((student) =>
+    safeArray(student.placements).map((placement) => ({
+      company: placement.companyName || "-",
+      institution: placement.institution?.name || "-",
+    }))
+  );
+
+  return {
+    reportTypes: [
+      { value: "trainee", label: "Trainee Details" },
+      { value: "placement", label: "Placement Details" },
+      { value: "institution", label: "Institution Summary" },
+      { value: "skill-placement", label: "Skill Placement Details" },
+    ],
+    courses: uniqueSorted(students.map((student) => student.course)),
+    qualifications: uniqueSorted(students.map((student) => safeObject(student.profileData).education?.education)),
+    institutions: uniqueSorted(placementRows.map((row) => row.institution)),
+    companies: uniqueSorted(placementRows.map((row) => row.company)),
+  };
+};
+
 const getAdminReports = async ({ reportType, course, qualification, dateOfJoining, institution, company, search }) => {
   const normalizedType = normalizeReportType(reportType);
   const normalizedDate = normalizeDate(dateOfJoining);
@@ -781,4 +820,5 @@ const getAdminReports = async ({ reportType, course, qualification, dateOfJoinin
 
 module.exports = {
   getAdminReports,
+  getReportOptions,
 };

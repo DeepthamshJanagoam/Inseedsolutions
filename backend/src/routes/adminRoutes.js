@@ -18,6 +18,7 @@ router.use(authenticate, requireRole("ADMIN", "TRAINEE_OPERATOR", "PLACEMENT_OPE
 
 router.get("/overview", asyncHandler(adminController.getAdminOverview));
 router.get("/reports/export", requireRole("ADMIN"), asyncHandler(reportController.exportAdminReport));
+router.get("/reports/options", requireRole("ADMIN"), asyncHandler(reportController.getAdminReportOptions));
 router.get("/reports", requireRole("ADMIN"), asyncHandler(reportController.getAdminReports));
 
 router
