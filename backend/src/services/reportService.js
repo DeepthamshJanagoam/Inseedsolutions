@@ -35,6 +35,27 @@ const safeArray = (value) => (Array.isArray(value) ? value : []);
 
 const formatStatus = (value) => STATUS_LABELS[value] || String(value || "").replaceAll("_", " ");
 
+const getCandidateSortParts = (candidateCode) => {
+  const text = normalizeString(candidateCode);
+  const digits = text.replace(/\D/g, "");
+  const batch = digits.length >= 4 ? Number(digits.slice(0, 4)) : Number.MAX_SAFE_INTEGER;
+  const sequence = digits.length > 4 ? Number(digits.slice(4)) : Number.MAX_SAFE_INTEGER;
+
+  return { batch, sequence, text };
+};
+
+const compareCandidateRows = (left, right) => {
+  const leftParts = getCandidateSortParts(left.candidateCode);
+  const rightParts = getCandidateSortParts(right.candidateCode);
+
+  return (
+    leftParts.batch - rightParts.batch ||
+    leftParts.sequence - rightParts.sequence ||
+    leftParts.text.localeCompare(rightParts.text) ||
+    normalizeString(left.name || left.trainee).localeCompare(normalizeString(right.name || right.trainee))
+  );
+};
+
 const buildStudentSnapshot = (student) => {
   const profile = safeObject(student.profileData);
   const basicInfo = safeObject(profile.basicInfo);
@@ -619,7 +640,7 @@ const buildTable = (reportType, traineeRows, placementRows, institutionRows, ski
         { key: "averagePackage", label: "Average Package", format: "currency" },
         { key: "topCompany", label: "Top Company" },
       ],
-      rows: institutionRows,
+      rows: [...institutionRows].sort((left, right) => normalizeString(left.institution).localeCompare(normalizeString(right.institution))),
     };
   }
 
@@ -636,7 +657,7 @@ const buildTable = (reportType, traineeRows, placementRows, institutionRows, ski
         { key: "status", label: "Status", format: "status" },
         { key: "dateOfJoining", label: "Date of Joining", format: "date" },
       ],
-      rows: placementRows,
+      rows: [...placementRows].sort(compareCandidateRows),
     };
   }
 
@@ -661,7 +682,7 @@ const buildTable = (reportType, traineeRows, placementRows, institutionRows, ski
         { key: "month6Name", label: "6th Month" },
         { key: "month6Salary", label: "Salary", format: "currency" },
       ],
-      rows: skillRows,
+      rows: [...skillRows].sort(compareCandidateRows),
     };
   }
 
@@ -677,7 +698,7 @@ const buildTable = (reportType, traineeRows, placementRows, institutionRows, ski
       { key: "city", label: "City" },
       { key: "district", label: "District" },
     ],
-    rows: traineeRows,
+    rows: [...traineeRows].sort(compareCandidateRows),
   };
 };
 
@@ -701,7 +722,7 @@ const getAdminReports = async ({ reportType, course, qualification, dateOfJoinin
         },
       },
     },
-    orderBy: [{ createdAt: "desc" }],
+    orderBy: [{ candidateCode: "asc" }, { createdAt: "asc" }],
   });
 
   const placementRows = buildPlacementRows(students).filter((row) => matchesCommonFilters(row, normalizedFilters));

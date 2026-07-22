@@ -5269,20 +5269,52 @@ button {
 }
 
 .reports-download-trigger-icon {
+  position: relative;
   display: inline-grid;
   place-items: center;
   width: 24px;
   height: 24px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.18);
-  font-size: 0.9rem;
-  line-height: 1;
+}
+
+.reports-download-trigger-icon::before {
+  content: "";
+  width: 2px;
+  height: 10px;
+  border-radius: 999px;
+  background: #ffffff;
+  transform: translateY(-2px);
+}
+
+.reports-download-trigger-icon::after {
+  content: "";
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-right: 2px solid #ffffff;
+  border-bottom: 2px solid #ffffff;
+  transform: translateY(2px) rotate(45deg);
 }
 
 .reports-download-caret {
+  position: relative;
+  display: inline-block;
+  width: 10px;
+  height: 10px;
   margin-left: 2px;
-  font-size: 0.95rem;
   transition: transform 180ms ease;
+}
+
+.reports-download-caret::before {
+  content: "";
+  position: absolute;
+  inset: 1px 0 0 0;
+  width: 7px;
+  height: 7px;
+  border-right: 2px solid rgba(255, 255, 255, 0.92);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.92);
+  transform: rotate(45deg);
 }
 
 .reports-download-menu.is-open .reports-download-caret {
