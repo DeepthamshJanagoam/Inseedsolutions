@@ -73,7 +73,7 @@ if (adminDashboard) {
         renderModules(modules);
       } catch (error) {
         if (/401|403|token|permission|expired/i.test(error.message)) {
-          window.AdminAuth.logout();
+          setText("dashboardMeta", "Your session could not load dashboard data. Please refresh or sign in again.");
           return;
         }
 

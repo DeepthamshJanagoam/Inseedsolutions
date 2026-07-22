@@ -216,7 +216,7 @@ if (adminGalleryRoot) {
 
     loadGallery().catch((error) => {
       if (/401|403|token|permission|expired/i.test(error.message)) {
-        window.AdminAuth.logout();
+        setStatus("Your session could not load gallery data. Please refresh or sign in again.");
         return;
       }
 

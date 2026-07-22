@@ -33,7 +33,7 @@
   };
 
   const getStoredUser = () => {
-    const raw = sessionStorage.getItem("authUser");
+    const raw = sessionStorage.getItem("authUser") || localStorage.getItem("authUser");
     try {
       return raw ? JSON.parse(raw) : null;
     } catch (error) {
@@ -57,6 +57,8 @@
   const clearSession = () => {
     sessionStorage.removeItem("authToken");
     sessionStorage.removeItem("authUser");
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("authUser");
     clearPendingToast();
   };
 
@@ -151,13 +153,16 @@
   };
 
   const requirePage = (pageKey) => {
-    const token = sessionStorage.getItem("authToken");
+    const token = sessionStorage.getItem("authToken") || localStorage.getItem("authToken");
     const user = getStoredUser();
 
     if (!token || !user) {
       window.location.href = "admin-login.html";
       return null;
     }
+
+    sessionStorage.setItem("authToken", token);
+    sessionStorage.setItem("authUser", JSON.stringify(user));
 
     if (user.mustChangePassword && pageKey !== "force-password-change") {
       window.location.href = "admin-force-password-change.html";

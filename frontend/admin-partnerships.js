@@ -325,7 +325,7 @@ if (adminPartnershipsRoot) {
         setText("partnershipAdminMeta", "Partnership agreements loaded successfully.");
       } catch (error) {
         if (/401|403|token|permission|expired/i.test(error.message)) {
-          window.AdminAuth.logout();
+          setText("partnershipAdminMeta", "Your session could not load partnership data. Please refresh or sign in again.");
           return;
         }
 

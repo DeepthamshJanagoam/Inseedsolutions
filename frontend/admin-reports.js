@@ -527,7 +527,7 @@ if (adminReportsRoot) {
         renderInitialReportState();
       } catch (error) {
         if (/401|403|token|permission|expired/i.test(error.message)) {
-          window.AdminAuth.logout();
+          elements.meta.textContent = "Your admin session could not load reports. Please refresh or sign in again.";
           return;
         }
         elements.meta.textContent = error.message || "Unable to load report filters.";
@@ -557,7 +557,7 @@ if (adminReportsRoot) {
         renderReport(result.data);
       } catch (error) {
         if (/401|403|token|permission|expired/i.test(error.message)) {
-          window.AdminAuth.logout();
+          elements.meta.textContent = "Your admin session could not load report filters. Please refresh or sign in again.";
           return;
         }
 

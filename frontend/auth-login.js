@@ -67,6 +67,8 @@ if (loginForm) {
 
       sessionStorage.setItem("authToken", result.data.token);
       sessionStorage.setItem("authUser", JSON.stringify(result.data.user));
+      localStorage.setItem("authToken", result.data.token);
+      localStorage.setItem("authUser", JSON.stringify(result.data.user));
       sessionStorage.setItem(
         "adminLoginToast",
         JSON.stringify({
