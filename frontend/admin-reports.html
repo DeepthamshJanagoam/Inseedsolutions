@@ -219,17 +219,24 @@
                       aria-expanded="false"
                       aria-controls="reportsDownloadOptions"
                     >
-                      Download Report
-                      <span aria-hidden="true">⌄</span>
+                      <span class="reports-download-trigger-icon" aria-hidden="true">↓</span>
+                      <span>Download Report</span>
+                      <span class="reports-download-caret" aria-hidden="true">⌄</span>
                     </button>
                     <div class="reports-download-options" id="reportsDownloadOptions" role="menu" aria-label="Download report options" hidden>
                       <button type="button" role="menuitem" data-report-download="pdf">
                         <span class="reports-download-icon">PDF</span>
-                        Download as PDF
+                        <span>
+                          <strong>Download as PDF</strong>
+                          <small>Presentation-ready report</small>
+                        </span>
                       </button>
                       <button type="button" role="menuitem" data-report-download="xlsx">
                         <span class="reports-download-icon">XLS</span>
-                        Download as Excel
+                        <span>
+                          <strong>Download as Excel</strong>
+                          <small>Editable workbook export</small>
+                        </span>
                       </button>
                     </div>
                   </div>
@@ -260,5 +267,4 @@
     <script src="admin-reports.js"></script>
   </body>
 </html>
-
 

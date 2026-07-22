@@ -194,7 +194,15 @@ if (adminReportsRoot) {
         allOptions.forEach((button) => {
           button.disabled = true;
         });
-        if (option) option.textContent = `Preparing ${label}...`;
+        if (option) {
+          option.innerHTML = `
+            <span class="reports-download-icon">...</span>
+            <span>
+              <strong>Preparing ${label}...</strong>
+              <small>Please wait</small>
+            </span>
+          `;
+        }
 
         const params = new URLSearchParams(buildQuery({ ...filters, reportType }));
         params.set("format", format);
